@@ -19,8 +19,8 @@ class BaseResponseTest {
 
     @Before
     fun setUp() {
-        expectedResponse = BaseResponse(getTags(), "exact", getDefinitions())
-        actualResponse = getBaseResponse()
+        expectedResponse = getExpected()
+        actualResponse = getActual()
     }
 
     @Test
@@ -28,7 +28,9 @@ class BaseResponseTest {
         assertEquals(expectedResponse, actualResponse)
     }
 
-    private fun getBaseResponse(): BaseResponse {
+    fun getExpected() = BaseResponse(getTags(), "exact", getDefinitions())
+
+    fun getActual(): BaseResponse {
         val file = DIRECTORY + File.separator + FILE_NAME
         return Gson().fromJson(FileReader(file), BaseResponse::class.java)
     }
