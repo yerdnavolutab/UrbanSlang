@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.TextView
 import com.butul0ve.urbanslang.R
 import com.butul0ve.urbanslang.bean.Definition
@@ -28,6 +27,8 @@ class DefinitionAdapter(
     override fun getItemCount(): Int {
         return definitions.size
     }
+
+    fun getDefinition(position: Int) = definitions[position]
 
     inner class DefinitionHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
