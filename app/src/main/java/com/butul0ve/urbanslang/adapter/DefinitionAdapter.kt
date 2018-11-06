@@ -9,7 +9,7 @@ import com.butul0ve.urbanslang.R
 import com.butul0ve.urbanslang.bean.Definition
 
 class DefinitionAdapter(
-    private val definitions: List<Definition>,
+    val definitions: List<Definition>,
     private val clickListener: DefinitionClickListener
 ) :
     RecyclerView.Adapter<DefinitionAdapter.DefinitionHolder>() {
@@ -27,8 +27,6 @@ class DefinitionAdapter(
     override fun getItemCount(): Int {
         return definitions.size
     }
-
-    fun getDefinition(position: Int) = definitions[position]
 
     inner class DefinitionHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {

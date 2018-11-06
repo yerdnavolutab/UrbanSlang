@@ -12,17 +12,30 @@ import com.butul0ve.urbanslang.R
 import com.butul0ve.urbanslang.adapter.DefinitionAdapter
 import com.butul0ve.urbanslang.bean.Definition
 
+private const val DEFINITIONS = "definitions_extra_key"
+private const val QUERY = "query_extra_key"
+
 class MainFragment : Fragment(), MainMvpView {
 
     private lateinit var toolbar: Toolbar
     private lateinit var definitionsRV: RecyclerView
     private lateinit var noResultTV: TextView
     private lateinit var presenter: MainMvpPresenter<MainMvpView>
+    private lateinit var searchView: SearchView
+
+    private lateinit var query: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        presenter = MainPresenter()
+        if (savedInstanceState == null) {
+            presenter = MainPresenter()
+        } else {
+            if (savedInstanceState.containsKey(DEFINITIONS)) {
+                val list = savedInstanceState.getParcelableArray(DEFINITIONS) as Array<Definition>
+                presenter = MainPresenter(list.asList())
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -38,7 +51,15 @@ class MainFragment : Fragment(), MainMvpView {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         if (::presenter.isInitialized) {
             presenter.onAttach(this)
-            presenter.onViewInitialized()
+            if (savedInstanceState == null) {
+                presenter.onFirstViewInitialized()
+            } else {
+                presenter.onViewInitialized()
+            }
+        }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(QUERY)) {
+            query = savedInstanceState.getString(QUERY)
         }
     }
 
@@ -52,10 +73,21 @@ class MainFragment : Fragment(), MainMvpView {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.main_menu, menu)
         val search = menu?.findItem(R.id.action_search)
-        val searchView = search?.actionView as SearchView
+        searchView = search?.actionView as SearchView
+        if (::query.isInitialized && query.isNotEmpty()) {
+            searchView.isIconified = false
+            searchView.setQuery(query, false)
+        }
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(text: String?): Boolean {
-                text?.let { presenter.getData(it) }
+            override fun onQueryTextSubmit(text: String): Boolean {
+                if (::presenter.isInitialized) {
+                    presenter.getData(text)
+                } else {
+                    presenter = MainPresenter()
+                    presenter.onAttach(this@MainFragment)
+                    presenter.getData(text)
+                }
+
                 return true
             }
 
@@ -64,6 +96,20 @@ class MainFragment : Fragment(), MainMvpView {
             }
 
         })
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (::presenter.isInitialized) {
+            val definitions = presenter.getDefinitions()
+            if (definitions != null) {
+                outState.putParcelableArray(DEFINITIONS, definitions.toTypedArray())
+            }
+        }
+
+        if (searchView.query != null) {
+            outState.putString(QUERY, searchView.query.toString())
+        }
     }
 
     override fun showResultSearch(adapter: DefinitionAdapter) {

@@ -4,6 +4,7 @@ import android.util.Log
 import com.butul0ve.urbanslang.adapter.DefinitionAdapter
 import com.butul0ve.urbanslang.adapter.DefinitionClickListener
 import com.butul0ve.urbanslang.bean.BaseResponse
+import com.butul0ve.urbanslang.bean.Definition
 import com.butul0ve.urbanslang.mvp.BasePresenter
 import com.butul0ve.urbanslang.network.AppNetworkHelper
 import com.butul0ve.urbanslang.network.NetworkHelper
@@ -16,10 +17,14 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainPresenter<V : MainMvpView> : BasePresenter<V>(), MainMvpPresenter<V>, DefinitionClickListener {
+class MainPresenter<V : MainMvpView>() : BasePresenter<V>(), MainMvpPresenter<V>, DefinitionClickListener {
 
     private val networkHelper: NetworkHelper
     private lateinit var definitionAdapter: DefinitionAdapter
+
+    constructor(definitions: List<Definition>): this() {
+        definitionAdapter = DefinitionAdapter(definitions, this)
+    }
 
     init {
         val url = "http://api.urbandictionary.com/"
@@ -31,11 +36,21 @@ class MainPresenter<V : MainMvpView> : BasePresenter<V>(), MainMvpPresenter<V>, 
         networkHelper = AppNetworkHelper(retrofit.create(ServerApi::class.java))
     }
 
-    override fun onViewInitialized() {
+    override fun onFirstViewInitialized() {
         networkHelper.getData()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(getObserver())
+    }
+
+    override fun onViewInitialized() {
+        if (isViewAttached()) {
+            if (::definitionAdapter.isInitialized) {
+                mvpView?.showResultSearch(definitionAdapter)
+            } else {
+                mvpView?.showError()
+            }
+        }
     }
 
     override fun getData(query: String) {
@@ -45,10 +60,16 @@ class MainPresenter<V : MainMvpView> : BasePresenter<V>(), MainMvpPresenter<V>, 
             .subscribe(getObserver())
     }
 
+    override fun getDefinitions(): List<Definition>? {
+        return if (::definitionAdapter.isInitialized)
+            definitionAdapter.definitions
+        else null
+    }
+
     override fun onItemClick(position: Int) {
         if (::definitionAdapter.isInitialized) {
             if (isViewAttached()) {
-                val definition = definitionAdapter.getDefinition(position)
+                val definition = definitionAdapter.definitions[position]
                 mvpView?.onClick(definition)
             }
         }
