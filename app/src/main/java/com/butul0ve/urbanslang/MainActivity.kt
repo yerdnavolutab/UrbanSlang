@@ -6,6 +6,7 @@ import android.support.design.widget.NavigationView
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
+import com.butul0ve.urbanslang.mvp.MainFragment
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -17,6 +18,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initUI()
+
+        val manager = supportFragmentManager
+        manager.beginTransaction().apply {
+            replace(R.id.frame_layout, MainFragment())
+            commit()
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

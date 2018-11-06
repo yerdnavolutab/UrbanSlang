@@ -9,4 +9,6 @@
     <string name="random">random</string>
     <string name="settings">settings</string>
     <string name="policy_privacy">policy_privacy</string>
+    <string name="no_results">no results</string>
+    <string name="definitions">definitions</string>
 </resources>
