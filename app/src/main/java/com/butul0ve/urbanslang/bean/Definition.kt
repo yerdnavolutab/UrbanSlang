@@ -3,9 +3,12 @@ package com.butul0ve.urbanslang.bean
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
 
 @Entity(tableName = "definitions")
+@Parcelize
 data class Definition(@PrimaryKey(autoGenerate = true) var id: Long?,
                       @ColumnInfo(name = "definition") var definition: String,
                       @ColumnInfo(name = "permalink") var permalink: String,
@@ -14,7 +17,8 @@ data class Definition(@PrimaryKey(autoGenerate = true) var id: Long?,
                       @ColumnInfo(name = "author") var author: String,
                       @ColumnInfo(name = "word") var word: String,
                       @ColumnInfo(name = "example") var example: String,
-                      @ColumnInfo(name = "favorite") var favorite: Int = 0) {
+                      @ColumnInfo(name = "favorite") var favorite: Int = 0)
+    : Parcelable {
 
     override fun hashCode(): Int {
         var hash = 17
