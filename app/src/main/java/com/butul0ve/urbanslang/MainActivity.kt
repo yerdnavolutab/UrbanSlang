@@ -7,6 +7,10 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
 import com.butul0ve.urbanslang.mvp.main.MainFragment
+import com.butul0ve.urbanslang.utils.convertToFragment
+
+private const val FRAGMENT_KEY = "fragment_extra_key"
+private const val ARGS_KEY = "arguments_extra_key"
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -19,10 +23,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         initUI()
 
+        if (savedInstanceState == null) {
+            supportFragmentManager
+                .beginTransaction().apply {
+                    replace(R.id.frame_layout, MainFragment())
+                    commit()
+                }
+        } else if (savedInstanceState.containsKey(FRAGMENT_KEY) && savedInstanceState.containsKey(ARGS_KEY)) {
+            val className = savedInstanceState.getString(FRAGMENT_KEY)
+            val fragment = className.convertToFragment()
+            fragment.arguments = savedInstanceState.getBundle(ARGS_KEY)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
         val manager = supportFragmentManager
-        manager.beginTransaction().apply {
-            replace(R.id.frame_layout, MainFragment())
-            commit()
+        val currentFragment = manager.findFragmentById(R.id.frame_layout)
+        if (currentFragment != null) {
+            val args = currentFragment.arguments
+            outState?.putString(FRAGMENT_KEY, currentFragment::class.java.simpleName)
+            outState?.putBundle(ARGS_KEY, args)
         }
     }
 
