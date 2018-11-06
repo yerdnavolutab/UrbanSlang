@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+                android:id="@+id/random_item"
+                android:icon="@drawable/ic_random"
+                android:title="@string/random" />
+        <item
+                android:id="@+id/search_item"
+                android:icon="@drawable/search"
+                android:title="@string/search" />
+        <item
+                android:id="@+id/favorites_item"
+                android:icon="@drawable/favorite_black"
+                android:title="@string/favorites" />
+        <item
+                android:id="@+id/cached_item"
+                android:icon="@drawable/favorite_white"
+                android:title="@string/cache" />
+        <item
+                android:id="@+id/trend_item"
+                android:icon="@drawable/trends"
+                android:title="@string/trends" />
+        <item
+                android:id="@+id/settings_item"
+                android:icon="@drawable/ic_settings"
+                android:title="@string/settings" />
+        <item
+                android:id="@+id/policy_privacy_item"
+                android:icon="@drawable/ic_policy_privacy"
+                android:title="@string/policy_privacy" />
+    </group>
+</menu>
