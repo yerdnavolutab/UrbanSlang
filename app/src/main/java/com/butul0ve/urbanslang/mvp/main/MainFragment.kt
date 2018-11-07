@@ -74,6 +74,7 @@ class MainFragment : Fragment(), MainMvpView {
         inflater?.inflate(R.menu.main_menu, menu)
         val search = menu?.findItem(R.id.action_search)
         searchView = search?.actionView as SearchView
+        searchView.maxWidth = Int.MAX_VALUE
         if (::query.isInitialized && query.isNotEmpty()) {
             searchView.isIconified = false
             searchView.setQuery(query, false)
