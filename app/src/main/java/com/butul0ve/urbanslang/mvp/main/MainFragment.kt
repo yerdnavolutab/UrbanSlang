@@ -58,18 +58,45 @@ class MainFragment : Fragment(), MainMvpView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
-        if (::presenter.isInitialized) {
-            presenter.onAttach(this)
-            if (savedInstanceState == null) {
+
+        if (savedInstanceState == null) {
+
+            if (arguments == null) {
+                presenter = MainPresenter(dbHelper)
+                presenter.onAttach(this)
                 presenter.onFirstViewInitialized()
+
             } else {
+
+                if (arguments!!.containsKey(DEFINITIONS)) {
+                    val list = arguments!!.getParcelableArray(DEFINITIONS) as Array<Definition>
+                    presenter = MainPresenter(dbHelper, list.asList())
+                    presenter.onAttach(this)
+                    presenter.onViewInitialized()
+                }
+
+                if (arguments!!.containsKey(QUERY)) {
+                    query = arguments!!.getString(QUERY)
+                }
+            }
+        } else {
+
+            if (savedInstanceState.containsKey(DEFINITIONS)) {
+                val list = savedInstanceState.getParcelableArray(DEFINITIONS) as Array<Definition>
+                presenter = MainPresenter(dbHelper, list.asList())
+                presenter.onAttach(this)
                 presenter.onViewInitialized()
+
+            }
+
+            if (savedInstanceState.containsKey(QUERY)) {
+                query = savedInstanceState.getString(QUERY)
             }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDetach() {
+        super.onDetach()
         if (::presenter.isInitialized) {
             presenter.onDetach()
         }
@@ -106,6 +133,7 @@ class MainFragment : Fragment(), MainMvpView {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+
         if (::presenter.isInitialized) {
             val definitions = presenter.getDefinitions()
             if (definitions != null) {
@@ -115,6 +143,16 @@ class MainFragment : Fragment(), MainMvpView {
 
         if (searchView.query != null) {
             outState.putString(QUERY, searchView.query.toString())
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::presenter.isInitialized) {
+            if (arguments == null) {
+                arguments = Bundle()
+            }
+            onSaveInstanceState(arguments!!)
         }
     }
 
