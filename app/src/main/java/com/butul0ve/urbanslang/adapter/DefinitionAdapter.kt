@@ -36,6 +36,10 @@ class DefinitionAdapter(
         private val exampleTV: TextView = view.findViewById(R.id.example_TV)
         private val authorTV: TextView = view.findViewById(R.id.author_TV)
 
+        init {
+            view.setOnClickListener(this)
+        }
+
         override fun onClick(v: View?) {
             clickListener.onItemClick(layoutPosition)
         }
