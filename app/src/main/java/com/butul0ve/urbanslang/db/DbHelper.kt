@@ -16,6 +16,8 @@ interface DbHelper {
 
     fun saveDefinition(definition: Definition): Single<Long>
 
+    fun saveDefinitions(definitions: List<Definition>): Single<List<Long>>
+
     fun saveDefinitionToFavorites(definition: Definition): Completable
 
     fun deleteDefinition(definition: Definition): Completable
@@ -27,4 +29,6 @@ interface DbHelper {
     fun deleteFavoritesDefinitions(): Completable
 
     fun deleteCachedDefinitions(): Completable
+
+    fun findDefinition(permalink: String): Single<Definition>
 }

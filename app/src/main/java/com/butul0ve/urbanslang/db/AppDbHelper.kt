@@ -16,12 +16,20 @@ class AppDbHelper(private val db: UrbanDatabase) : DbHelper {
         return db.definitionDataDao().getDefinitionById(id)
     }
 
+    override fun findDefinition(permalink: String): Single<Definition> {
+        return db.definitionDataDao().findDefinitionByLink(permalink)
+    }
+
     override fun getFavoritesDefinitions(): Observable<List<Definition>> {
         return Observable.fromCallable { db.definitionDataDao().getAllFavorites() }
     }
 
     override fun saveDefinition(definition: Definition): Single<Long> {
         return Single.fromCallable { db.definitionDataDao().insert(definition) }
+    }
+
+    override fun saveDefinitions(definitions: List<Definition>): Single<List<Long>> {
+        return Single.fromCallable { db.definitionDataDao().insert(definitions) }
     }
 
     override fun saveDefinitionToFavorites(definition: Definition): Completable {

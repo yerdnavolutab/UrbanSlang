@@ -17,6 +17,9 @@ interface DefinitionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(definition: Definition): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(definitions: List<Definition>) : List<Long>
+
     @Query("delete from definitions")
     fun deleteAll()
 
@@ -31,4 +34,7 @@ interface DefinitionDao {
 
     @Query("delete from definitions where favorite = :favorite")
     fun deleteCachedDefinitions(favorite: Int = 0)
+
+    @Query("select * from definitions where permalink =:permalink limit 1")
+    fun findDefinitionByLink(permalink: String): Single<Definition>
 }
