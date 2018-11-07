@@ -5,11 +5,14 @@ import com.butul0ve.urbanslang.adapter.DefinitionAdapter
 import com.butul0ve.urbanslang.adapter.DefinitionClickListener
 import com.butul0ve.urbanslang.bean.BaseResponse
 import com.butul0ve.urbanslang.bean.Definition
+import com.butul0ve.urbanslang.db.DbHelper
 import com.butul0ve.urbanslang.mvp.BasePresenter
 import com.butul0ve.urbanslang.network.AppNetworkHelper
 import com.butul0ve.urbanslang.network.NetworkHelper
 import com.butul0ve.urbanslang.network.ServerApi
+import io.reactivex.Single
 import io.reactivex.SingleObserver
+import io.reactivex.SingleSource
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -21,9 +24,15 @@ class MainPresenter<V : MainMvpView>() : BasePresenter<V>(), MainMvpPresenter<V>
 
     private val networkHelper: NetworkHelper
     private lateinit var definitionAdapter: DefinitionAdapter
+    private lateinit var dbHelper: DbHelper
 
-    constructor(definitions: List<Definition>): this() {
+    constructor(dbHelper: DbHelper, definitions: List<Definition>) : this() {
         definitionAdapter = DefinitionAdapter(definitions, this)
+        this.dbHelper = dbHelper
+    }
+
+    constructor(dbHelper: DbHelper) : this() {
+        this.dbHelper = dbHelper
     }
 
     init {
@@ -38,6 +47,7 @@ class MainPresenter<V : MainMvpView>() : BasePresenter<V>(), MainMvpPresenter<V>
 
     override fun onFirstViewInitialized() {
         networkHelper.getData()
+            .flatMap { saveDefinitions(it) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(getObserver())
@@ -55,9 +65,34 @@ class MainPresenter<V : MainMvpView>() : BasePresenter<V>(), MainMvpPresenter<V>
 
     override fun getData(query: String) {
         networkHelper.getData(query)
+            .flatMap { saveDefinitions(it) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(getObserver())
+    }
+
+    private fun saveDefinitions(response: BaseResponse): SingleSource<List<Definition>> {
+        val result = ArrayList<Definition>()
+        response.definitions.forEach { definition ->
+            disposable.add(
+                dbHelper.findDefinition(definition.permalink)
+                    .subscribe({
+                        result.add(it)
+                    },
+                        {
+                            Log.d("main presenter", "error getting definition")
+                            dbHelper.saveDefinition(definition).subscribe({ id ->
+                                definition.id = id
+                                result.add(definition)
+                            },
+                                {
+                                    Log.d("main presenter", "error saving definition")
+                                })
+
+                        })
+            )
+        }
+        return Single.just(result)
     }
 
     override fun getDefinitions(): List<Definition>? {
@@ -75,13 +110,14 @@ class MainPresenter<V : MainMvpView>() : BasePresenter<V>(), MainMvpPresenter<V>
         }
     }
 
-    private fun getObserver(): SingleObserver<BaseResponse> {
-        return object : SingleObserver<BaseResponse> {
+    private fun getObserver(): SingleObserver<List<Definition>> {
 
-            override fun onSuccess(t: BaseResponse) {
+        return object : SingleObserver<List<Definition>> {
+            override fun onSuccess(t: List<Definition>) {
                 if (isViewAttached()) {
-                    definitionAdapter = DefinitionAdapter(t.definitions, this@MainPresenter)
-                    Log.d("main presenter", "${t.definitions.size}")
+
+                    definitionAdapter = DefinitionAdapter(t, this@MainPresenter)
+                    Log.d("main presenter", "${t.size}")
                     mvpView?.showResultSearch(definitionAdapter)
                 } else {
                     Log.d("main presenter", "onSuccess view is not attached")
