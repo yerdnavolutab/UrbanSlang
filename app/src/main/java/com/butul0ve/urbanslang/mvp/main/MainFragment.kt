@@ -1,5 +1,6 @@
 package com.butul0ve.urbanslang.mvp.main
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -11,6 +12,9 @@ import android.widget.TextView
 import com.butul0ve.urbanslang.R
 import com.butul0ve.urbanslang.adapter.DefinitionAdapter
 import com.butul0ve.urbanslang.bean.Definition
+import com.butul0ve.urbanslang.db.AppDbHelper
+import com.butul0ve.urbanslang.db.DbHelper
+import com.butul0ve.urbanslang.db.UrbanDatabase
 
 private const val DEFINITIONS = "definitions_extra_key"
 private const val QUERY = "query_extra_key"
@@ -23,19 +27,24 @@ class MainFragment : Fragment(), MainMvpView {
     private lateinit var presenter: MainMvpPresenter<MainMvpView>
     private lateinit var searchView: SearchView
 
+    private lateinit var dbHelper: DbHelper
     private lateinit var query: String
+    private lateinit var callback: Callback
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        dbHelper = AppDbHelper(UrbanDatabase.getInstance(context!!)!!)
+
+        try {
+            callback = context as Callback
+        } catch (ex: ClassCastException) {
+            throw ClassCastException("${activity?.localClassName} must implement MainFragment.Callback")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        if (savedInstanceState == null) {
-            presenter = MainPresenter()
-        } else {
-            if (savedInstanceState.containsKey(DEFINITIONS)) {
-                val list = savedInstanceState.getParcelableArray(DEFINITIONS) as Array<Definition>
-                presenter = MainPresenter(list.asList())
-            }
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -56,10 +65,6 @@ class MainFragment : Fragment(), MainMvpView {
             } else {
                 presenter.onViewInitialized()
             }
-        }
-
-        if (savedInstanceState != null && savedInstanceState.containsKey(QUERY)) {
-            query = savedInstanceState.getString(QUERY)
         }
     }
 
@@ -125,6 +130,11 @@ class MainFragment : Fragment(), MainMvpView {
     }
 
     override fun onClick(definition: Definition) {
-        TODO("invoke method from main activity to open detail fragment")
+        callback.onDefinitionClick(definition)
+    }
+
+    interface Callback {
+
+        fun onDefinitionClick(definition: Definition)
     }
 }
