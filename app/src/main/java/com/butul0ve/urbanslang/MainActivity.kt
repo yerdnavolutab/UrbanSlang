@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun openFragment(fragment: Fragment) {
-        val isNeedToAddToBackStack = fragment::class.java.simpleName != MainFragment::class.java.simpleName
+        val isNeedToAddToBackStack = fragment::class.java.simpleName == DetailFragment::class.java.simpleName
 
         supportFragmentManager
             .beginTransaction().apply {
