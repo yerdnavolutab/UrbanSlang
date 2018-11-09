@@ -56,6 +56,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 //        TODO("hide the keyboard, add the fragment to the backstack and open it")
+        when (item.itemId) {
+            R.id.trend_item -> {
+                openFragment(TrendsFragment())
+                return true
+            }
+            R.id.cached_item -> {
+                openFragment(CacheFragment())
+                return true
+            }
+        }
         return false
     }
 
