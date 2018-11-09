@@ -28,6 +28,13 @@ class DefinitionAdapter(
         return definitions.size
     }
 
+    fun updateDefinitions(definitions: List<Definition>) {
+        this.definitions as ArrayList<Definition>
+        this.definitions.clear()
+        this.definitions.addAll(definitions)
+        notifyDataSetChanged()
+    }
+
     inner class DefinitionHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
 
