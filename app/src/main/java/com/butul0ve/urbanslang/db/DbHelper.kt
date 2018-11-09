@@ -14,6 +14,8 @@ interface DbHelper {
 
     fun getFavoritesDefinitions(): Observable<List<Definition>>
 
+    fun getCachedDefinitions(): Observable<List<Definition>>
+
     fun saveDefinition(definition: Definition): Single<Long>
 
     fun saveDefinitions(definitions: List<Definition>): Single<List<Long>>

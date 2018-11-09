@@ -24,6 +24,10 @@ class AppDbHelper(private val db: UrbanDatabase) : DbHelper {
         return Observable.fromCallable { db.definitionDataDao().getAllFavorites() }
     }
 
+    override fun getCachedDefinitions(): Observable<List<Definition>> {
+        return Observable.fromCallable { db.definitionDataDao().getAllCached() }
+    }
+
     override fun saveDefinition(definition: Definition): Single<Long> {
         return Single.fromCallable { db.definitionDataDao().insert(definition) }
     }
