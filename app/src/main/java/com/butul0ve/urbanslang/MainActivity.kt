@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
 import com.butul0ve.urbanslang.bean.Definition
+import com.butul0ve.urbanslang.mvp.cache.CacheFragment
 import com.butul0ve.urbanslang.mvp.detail.DetailFragment
 import com.butul0ve.urbanslang.mvp.main.MainFragment
 import com.butul0ve.urbanslang.mvp.trends.TrendsFragment
@@ -17,7 +18,7 @@ private const val FRAGMENT_KEY = "fragment_extra_key"
 private const val ARGS_KEY = "arguments_extra_key"
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    MainFragment.Callback, TrendsFragment.Callback {
+    MainFragment.Callback, TrendsFragment.Callback, CacheFragment.Callback {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -65,6 +66,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onWordClick(word: String) {
         TODO("open the MainFragment with the query")
+    }
+
+    override fun onCachedDefinitionClick(definition: Definition) {
+        val fragment = DetailFragment.newInstance(definition)
+        openFragment(fragment)
     }
 
     private fun openFragment(fragment: Fragment) {
