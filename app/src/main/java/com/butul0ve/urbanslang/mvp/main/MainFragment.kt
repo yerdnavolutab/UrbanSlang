@@ -77,7 +77,10 @@ class MainFragment : Fragment(), MainMvpView {
                 }
 
                 if (arguments!!.containsKey(QUERY)) {
+                    presenter = MainPresenter(dbHelper)
+                    presenter.onAttach(this)
                     query = arguments!!.getString(QUERY)
+                    presenter.getData(query)
                 }
             }
         } else {
@@ -142,7 +145,7 @@ class MainFragment : Fragment(), MainMvpView {
             }
         }
 
-        if (searchView.query != null) {
+        if (::searchView.isInitialized && searchView.query != null) {
             outState.putString(QUERY, searchView.query.toString())
         }
     }
@@ -170,5 +173,16 @@ class MainFragment : Fragment(), MainMvpView {
 
     override fun onClick(definition: Definition) {
         callback.onDefinitionClick(definition)
+    }
+
+    companion object {
+
+        fun newInstance(word: String): MainFragment {
+            val fragment = MainFragment()
+            val args = Bundle()
+            args.putString(QUERY, word)
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

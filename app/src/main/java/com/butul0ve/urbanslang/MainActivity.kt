@@ -87,7 +87,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onWordClick(word: String) {
-        TODO("open the MainFragment with the query")
+        val fragment = MainFragment.newInstance(word)
+        openFragment(fragment)
     }
 
     override fun onDefinitionClick(definition: Definition) {
