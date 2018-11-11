@@ -10,6 +10,7 @@ import android.view.MenuItem
 import com.butul0ve.urbanslang.bean.Definition
 import com.butul0ve.urbanslang.mvp.cache.CacheFragment
 import com.butul0ve.urbanslang.mvp.detail.DetailFragment
+import com.butul0ve.urbanslang.mvp.favorites.FavoritesFragment
 import com.butul0ve.urbanslang.mvp.main.MainFragment
 import com.butul0ve.urbanslang.mvp.trends.TrendsFragment
 import com.butul0ve.urbanslang.utils.convertToFragment
@@ -18,7 +19,7 @@ private const val FRAGMENT_KEY = "fragment_extra_key"
 private const val ARGS_KEY = "arguments_extra_key"
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    MainFragment.Callback, TrendsFragment.Callback, CacheFragment.Callback {
+    MainFragment.Callback, TrendsFragment.Callback, CacheFragment.Callback, FavoritesFragment.Callback {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -65,6 +66,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 openFragment(CacheFragment())
                 return true
             }
+            R.id.favorites_item -> {
+                openFragment(FavoritesFragment())
+                return true
+            }
         }
         return false
     }
@@ -79,6 +84,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCachedDefinitionClick(definition: Definition) {
+        val fragment = DetailFragment.newInstance(definition)
+        openFragment(fragment)
+    }
+
+    override fun onFavoritesDefinitionClick(definition: Definition) {
         val fragment = DetailFragment.newInstance(definition)
         openFragment(fragment)
     }
