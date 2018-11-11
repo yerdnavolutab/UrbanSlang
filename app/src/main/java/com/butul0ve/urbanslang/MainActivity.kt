@@ -86,17 +86,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun openFragment(fragment: Fragment) {
         val isNeedToAddToBackStack = fragment::class.java.simpleName == DetailFragment::class.java.simpleName
-
-        supportFragmentManager
-            .beginTransaction().apply {
-
-                if (isNeedToAddToBackStack) {
+        if (isNeedToAddToBackStack) {
+            supportFragmentManager
+                .beginTransaction().apply {
                     addToBackStack(null)
+                    replace(R.id.frame_layout, fragment)
+                    commit()
                 }
-
-                replace(R.id.frame_layout, fragment)
-                commit()
+        } else {
+            for (item in 0..supportFragmentManager.backStackEntryCount) {
+                supportFragmentManager.popBackStack()
             }
+            supportFragmentManager
+                .beginTransaction().apply {
+                    replace(R.id.frame_layout, fragment)
+                    commit()
+                }
+        }
     }
 
     private fun initUI() {
