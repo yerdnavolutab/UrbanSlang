@@ -15,6 +15,7 @@ import com.butul0ve.urbanslang.bean.Definition
 import com.butul0ve.urbanslang.db.AppDbHelper
 import com.butul0ve.urbanslang.db.DbHelper
 import com.butul0ve.urbanslang.db.UrbanDatabase
+import com.butul0ve.urbanslang.mvp.FragmentCallback
 
 private const val QUERY = "query_extra_key"
 
@@ -26,7 +27,7 @@ class CacheFragment : Fragment(), CacheMvpView {
     private lateinit var searchView: SearchView
 
     private lateinit var presenter: CacheMvpPresenter<CacheMvpView>
-    private lateinit var callback: Callback
+    private lateinit var callback: FragmentCallback
     private lateinit var dbHelper: DbHelper
     private lateinit var query: String
 
@@ -34,9 +35,9 @@ class CacheFragment : Fragment(), CacheMvpView {
         super.onAttach(context)
         dbHelper = AppDbHelper(UrbanDatabase.getInstance(context!!)!!)
         try {
-            callback = context as Callback
+            callback = context as FragmentCallback
         } catch (ex: ClassCastException) {
-            throw ClassCastException("${activity?.localClassName} must implement CacheFragment.Callback")
+            throw ClassCastException("${activity?.localClassName} must implement FragmentCallback")
         }
     }
 
@@ -141,11 +142,7 @@ class CacheFragment : Fragment(), CacheMvpView {
     }
 
     override fun onClick(definition: Definition) {
-        callback.onCachedDefinitionClick(definition)
+        callback.onDefinitionClick(definition)
     }
 
-    interface Callback {
-
-        fun onCachedDefinitionClick(definition: Definition)
-    }
 }

@@ -15,6 +15,7 @@ import com.butul0ve.urbanslang.bean.Definition
 import com.butul0ve.urbanslang.db.AppDbHelper
 import com.butul0ve.urbanslang.db.DbHelper
 import com.butul0ve.urbanslang.db.UrbanDatabase
+import com.butul0ve.urbanslang.mvp.FragmentCallback
 
 private const val DEFINITIONS = "definitions_extra_key"
 private const val QUERY = "query_extra_key"
@@ -29,16 +30,16 @@ class MainFragment : Fragment(), MainMvpView {
 
     private lateinit var dbHelper: DbHelper
     private lateinit var query: String
-    private lateinit var callback: Callback
+    private lateinit var callback: FragmentCallback
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         dbHelper = AppDbHelper(UrbanDatabase.getInstance(context!!)!!)
 
         try {
-            callback = context as Callback
+            callback = context as FragmentCallback
         } catch (ex: ClassCastException) {
-            throw ClassCastException("${activity?.localClassName} must implement MainFragment.Callback")
+            throw ClassCastException("${activity?.localClassName} must implement FragmentCallback")
         }
     }
 
@@ -169,10 +170,5 @@ class MainFragment : Fragment(), MainMvpView {
 
     override fun onClick(definition: Definition) {
         callback.onDefinitionClick(definition)
-    }
-
-    interface Callback {
-
-        fun onDefinitionClick(definition: Definition)
     }
 }

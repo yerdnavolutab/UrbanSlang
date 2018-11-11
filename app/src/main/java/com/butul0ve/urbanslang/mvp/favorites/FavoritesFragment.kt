@@ -15,6 +15,7 @@ import com.butul0ve.urbanslang.bean.Definition
 import com.butul0ve.urbanslang.db.AppDbHelper
 import com.butul0ve.urbanslang.db.DbHelper
 import com.butul0ve.urbanslang.db.UrbanDatabase
+import com.butul0ve.urbanslang.mvp.FragmentCallback
 
 private const val QUERY = "query_extra_key"
 
@@ -26,7 +27,7 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
     private lateinit var searchView: SearchView
 
     private lateinit var presenter: FavoritesMvpPresenter<FavoritesMvpView>
-    private lateinit var callback: FavoritesFragment.Callback
+    private lateinit var callback: FragmentCallback
     private lateinit var dbHelper: DbHelper
     private lateinit var query: String
 
@@ -35,9 +36,9 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
 
         dbHelper = AppDbHelper(UrbanDatabase.getInstance(context!!)!!)
         try {
-            callback = context as FavoritesFragment.Callback
+            callback = context as FragmentCallback
         } catch (ex: ClassCastException) {
-            throw ClassCastException("${activity?.localClassName} must implement FavoritesFragment.Callback")
+            throw ClassCastException("${activity?.localClassName} must implement FragmentCallback")
         }
     }
 
@@ -142,11 +143,6 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
     }
 
     override fun onClick(definition: Definition) {
-        callback.onFavoritesDefinitionClick(definition)
-    }
-
-    interface Callback {
-
-        fun onFavoritesDefinitionClick(definition: Definition)
+        callback.onDefinitionClick(definition)
     }
 }
