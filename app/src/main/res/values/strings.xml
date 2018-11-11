@@ -11,4 +11,12 @@
     <string name="policy_privacy">policy_privacy</string>
     <string name="no_results">no results</string>
     <string name="definitions">definitions</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="privacy_policy">Privacy Policy updated.\nPlease, read the link. Click \"yes\" if you agree with the
+        privacy policy and \"no\" otherwise (app only collect data on which the stability of the application depends
+        and personalized display of advertising)
+    </string>
+    <string name="privacy_policy_question">Do you agree with the privacy policy?</string>
+    <string name="policy_link">https://github.com/batulovandrey/UrbanSlang/blob/master/privacy_policy.md</string>
 </resources>

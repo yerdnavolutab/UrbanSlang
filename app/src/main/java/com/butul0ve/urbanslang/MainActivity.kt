@@ -1,5 +1,6 @@
 package com.butul0ve.urbanslang
 
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -7,6 +8,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
+import com.butul0ve.urbanslang.adapter.IS_USER_CHOICE
+import com.butul0ve.urbanslang.adapter.PrivacyPolicyFragment
 import com.butul0ve.urbanslang.bean.Definition
 import com.butul0ve.urbanslang.mvp.FragmentCallback
 import com.butul0ve.urbanslang.mvp.cache.CacheFragment
@@ -33,6 +36,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (savedInstanceState == null) {
             openFragment(MainFragment())
+
+            val isUserChoice = getSharedPreferences(packageName, Context.MODE_PRIVATE)
+                .getBoolean(IS_USER_CHOICE, false)
+
+            if (!isUserChoice) {
+                showPolicyDialogFragment()
+            }
+
         } else if (savedInstanceState.containsKey(FRAGMENT_KEY) && savedInstanceState.containsKey(ARGS_KEY)) {
             val className = savedInstanceState.getString(FRAGMENT_KEY)
             val fragment = className.convertToFragment()
@@ -112,5 +123,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout.addDrawerListener(toggle)
         navigationView.setNavigationItemSelectedListener(this)
         toggle.syncState()
+    }
+
+    private fun showPolicyDialogFragment() {
+        PrivacyPolicyFragment().show(supportFragmentManager, "policy")
     }
 }
