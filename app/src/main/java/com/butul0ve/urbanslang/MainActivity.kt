@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
@@ -67,7 +68,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onBackPressed()
         navigationView.hideKeyboard(this)
         closeDrawer()
-        clearBackStack()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -92,10 +92,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return true
             }
             R.id.search_item -> {
-                val fragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
-                if (fragment !is MainFragment) {
-                    openFragment(MainFragment())
-                }
+                clearBackStack()
                 return true
             }
         }
@@ -118,21 +115,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun openFragment(fragment: Fragment) {
-        val isNeedToAddToBackStack = fragment::class.java.simpleName == DetailFragment::class.java.simpleName
-        if (isNeedToAddToBackStack) {
-            supportFragmentManager
-                .beginTransaction().apply {
-                    addToBackStack(null)
-                    replace(R.id.frame_layout, fragment)
-                    commit()
-                }
-        } else {
+        if (fragment is MainFragment) {
             clearBackStack()
-            supportFragmentManager
-                .beginTransaction().apply {
-                    replace(R.id.frame_layout, fragment)
-                    commit()
-                }
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.frame_layout, fragment)
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                commit()
+            }
+
+            return
+        }
+
+        if (fragment !is DetailFragment) {
+            supportFragmentManager.popBackStack()
+        }
+
+        val tag = fragment::class.java.simpleName
+
+        supportFragmentManager.beginTransaction().apply {
+            addToBackStack(tag)
+            replace(R.id.frame_layout, fragment)
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            commit()
         }
     }
 
@@ -153,7 +157,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val count = supportFragmentManager.backStackEntryCount
         if (count <= 0) return
         for (i in 0 until count) {
-            supportFragmentManager.popBackStack()
+            supportFragmentManager.popBackStackImmediate()
         }
     }
 
