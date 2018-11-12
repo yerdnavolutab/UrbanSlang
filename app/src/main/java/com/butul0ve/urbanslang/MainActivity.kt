@@ -67,13 +67,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onBackPressed() {
         super.onBackPressed()
-        supportFragmentManager.popBackStack()
+        navigationView.hideKeyboard(this)
+        closeDrawer()
+        clearBackStack()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         navigationView.hideKeyboard(applicationContext)
-        val handler = Handler()
-        handler.postDelayed({ drawerLayout.closeDrawer(GravityCompat.START) }, 100)
+        closeDrawer()
 
         when (item.itemId) {
             R.id.trend_item -> {
@@ -128,9 +129,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     commit()
                 }
         } else {
-            for (item in 0..supportFragmentManager.backStackEntryCount) {
-                supportFragmentManager.popBackStack()
-            }
+            clearBackStack()
             supportFragmentManager
                 .beginTransaction().apply {
                     replace(R.id.frame_layout, fragment)
@@ -150,5 +149,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun showPolicyDialogFragment() {
         PrivacyPolicyFragment().show(supportFragmentManager, "policy")
+    }
+
+    private fun clearBackStack() {
+        val count = supportFragmentManager.backStackEntryCount
+        if (count <= 0) return
+        for (i in 0 until count) {
+            supportFragmentManager.popBackStack()
+        }
+    }
+
+    private fun closeDrawer() {
+        val handler = Handler()
+        handler.postDelayed({ drawerLayout.closeDrawer(GravityCompat.START) }, 100)
     }
 }
