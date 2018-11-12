@@ -3,8 +3,10 @@ package com.butul0ve.urbanslang
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
@@ -18,6 +20,7 @@ import com.butul0ve.urbanslang.mvp.favorites.FavoritesFragment
 import com.butul0ve.urbanslang.mvp.main.MainFragment
 import com.butul0ve.urbanslang.mvp.trends.TrendsFragment
 import com.butul0ve.urbanslang.utils.convertToFragment
+import com.butul0ve.urbanslang.utils.hideKeyboard
 
 private const val FRAGMENT_KEY = "fragment_extra_key"
 private const val ARGS_KEY = "arguments_extra_key"
@@ -68,7 +71,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-//        TODO("hide the keyboard, add the fragment to the backstack and open it")
+        navigationView.hideKeyboard(applicationContext)
+        val handler = Handler()
+        handler.postDelayed({ drawerLayout.closeDrawer(GravityCompat.START) }, 100)
+
         when (item.itemId) {
             R.id.trend_item -> {
                 openFragment(TrendsFragment())
@@ -82,6 +88,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 openFragment(FavoritesFragment())
                 return true
             }
+            R.id.random_item -> {
+                openFragment(MainFragment())
+                return true
+            }
+            R.id.search_item -> {
+                val fragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+                if (fragment !is MainFragment) {
+                    openFragment(MainFragment())
+                }
+                return true
+            }
         }
         return false
     }
@@ -92,6 +109,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onDefinitionClick(definition: Definition) {
+        navigationView.hideKeyboard(this)
         val fragment = DetailFragment.newInstance(definition)
         openFragment(fragment)
     }
