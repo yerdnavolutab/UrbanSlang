@@ -84,7 +84,7 @@ class MainFragment : Fragment(), MainMvpView {
                     presenter.onViewInitialized()
                 }
 
-                if (arguments!!.containsKey(QUERY)) {
+                if (arguments!!.containsKey(QUERY) && arguments!!.getString(QUERY).isNotEmpty()) {
                     presenter = MainPresenter(dbHelper)
                     presenter.onAttach(this)
                     query = arguments!!.getString(QUERY)
