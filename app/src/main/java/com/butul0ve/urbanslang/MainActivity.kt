@@ -1,9 +1,12 @@
 package com.butul0ve.urbanslang
 
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
@@ -15,6 +18,7 @@ import com.butul0ve.urbanslang.mvp.favorites.FavoritesFragment
 import com.butul0ve.urbanslang.mvp.main.MainFragment
 import com.butul0ve.urbanslang.mvp.trends.TrendsFragment
 import com.butul0ve.urbanslang.utils.convertToFragment
+import com.butul0ve.urbanslang.utils.hideKeyboard
 
 private const val FRAGMENT_KEY = "fragment_extra_key"
 private const val ARGS_KEY = "arguments_extra_key"
@@ -33,6 +37,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (savedInstanceState == null) {
             openFragment(MainFragment())
+
+            val isUserChoice = getSharedPreferences(packageName, Context.MODE_PRIVATE)
+                .getBoolean(IS_USER_CHOICE, false)
+
+            if (!isUserChoice) {
+                showPolicyDialogFragment()
+            }
+
         } else if (savedInstanceState.containsKey(FRAGMENT_KEY) && savedInstanceState.containsKey(ARGS_KEY)) {
             val className = savedInstanceState.getString(FRAGMENT_KEY)
             val fragment = className.convertToFragment()
@@ -53,11 +65,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onBackPressed() {
         super.onBackPressed()
-        supportFragmentManager.popBackStack()
+        navigationView.hideKeyboard(this)
+        closeDrawer()
+        clearBackStack()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-//        TODO("hide the keyboard, add the fragment to the backstack and open it")
+        navigationView.hideKeyboard(applicationContext)
+        closeDrawer()
+
         when (item.itemId) {
             R.id.trend_item -> {
                 openFragment(TrendsFragment())
@@ -71,17 +87,34 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 openFragment(FavoritesFragment())
                 return true
             }
+            R.id.random_item -> {
+                openFragment(MainFragment())
+                return true
+            }
+            R.id.search_item -> {
+                val fragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+                if (fragment !is MainFragment) {
+                    openFragment(MainFragment())
+                }
+                return true
+            }
         }
         return false
     }
 
     override fun onWordClick(word: String) {
-        TODO("open the MainFragment with the query")
+        val fragment = MainFragment.newInstance(word)
+        openFragment(fragment)
     }
 
     override fun onDefinitionClick(definition: Definition) {
+        navigationView.hideKeyboard(this)
         val fragment = DetailFragment.newInstance(definition)
         openFragment(fragment)
+    }
+
+    override fun onMenuToolbarClick() {
+        drawerLayout.openDrawer(GravityCompat.START)
     }
 
     private fun openFragment(fragment: Fragment) {
@@ -94,9 +127,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     commit()
                 }
         } else {
-            for (item in 0..supportFragmentManager.backStackEntryCount) {
-                supportFragmentManager.popBackStack()
-            }
+            clearBackStack()
             supportFragmentManager
                 .beginTransaction().apply {
                     replace(R.id.frame_layout, fragment)
@@ -112,5 +143,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout.addDrawerListener(toggle)
         navigationView.setNavigationItemSelectedListener(this)
         toggle.syncState()
+    }
+
+    private fun showPolicyDialogFragment() {
+        PrivacyPolicyFragmentDialog().show(supportFragmentManager, "policy")
+    }
+
+    private fun clearBackStack() {
+        val count = supportFragmentManager.backStackEntryCount
+        if (count <= 0) return
+        for (i in 0 until count) {
+            supportFragmentManager.popBackStack()
+        }
+    }
+
+    private fun closeDrawer() {
+        val handler = Handler()
+        handler.postDelayed({ drawerLayout.closeDrawer(GravityCompat.START) }, 100)
     }
 }

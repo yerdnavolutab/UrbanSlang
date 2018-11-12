@@ -2,6 +2,8 @@ package com.butul0ve.urbanslang.utils
 
 import android.content.Context
 import android.support.v4.app.Fragment
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.butul0ve.urbanslang.mvp.main.MainFragment
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -36,4 +38,9 @@ fun readDictionaryFromAssets(context: Context): Map<String, List<String>> {
     }
 
     return dictionary
+}
+
+fun View.hideKeyboard(context: Context) {
+    val manager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+    manager?.hideSoftInputFromWindow(this.windowToken, 0)
 }
