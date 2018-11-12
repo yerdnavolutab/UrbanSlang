@@ -16,6 +16,7 @@ import com.butul0ve.urbanslang.db.AppDbHelper
 import com.butul0ve.urbanslang.db.DbHelper
 import com.butul0ve.urbanslang.db.UrbanDatabase
 import com.butul0ve.urbanslang.mvp.FragmentCallback
+import com.butul0ve.urbanslang.utils.hideKeyboard
 
 private const val QUERY = "query_extra_key"
 
@@ -127,7 +128,9 @@ class CacheFragment : Fragment(), CacheMvpView {
             }
 
         })
-
+        searchView.onActionViewExpanded()
+        activity?.applicationContext?.let { searchView.hideKeyboard(it) }
+        searchView.clearFocus()
     }
 
     override fun showResultSearch(definitionAdapter: DefinitionAdapter) {
