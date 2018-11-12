@@ -10,8 +10,6 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
-import com.butul0ve.urbanslang.adapter.IS_USER_CHOICE
-import com.butul0ve.urbanslang.adapter.PrivacyPolicyFragment
 import com.butul0ve.urbanslang.bean.Definition
 import com.butul0ve.urbanslang.mvp.FragmentCallback
 import com.butul0ve.urbanslang.mvp.cache.CacheFragment
@@ -148,7 +146,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun showPolicyDialogFragment() {
-        PrivacyPolicyFragment().show(supportFragmentManager, "policy")
+        PrivacyPolicyFragmentDialog().show(supportFragmentManager, "policy")
     }
 
     private fun clearBackStack() {

@@ -1,4 +1,4 @@
-package com.butul0ve.urbanslang.adapter
+package com.butul0ve.urbanslang
 
 import android.content.Context
 import android.os.Bundle
@@ -7,12 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import com.butul0ve.urbanslang.R
 
 const val PRIVACY_POLICY_ACCEPTED = "privacy_policy_accepted_key"
 const val IS_USER_CHOICE = "is_user_choice_key"
 
-class PrivacyPolicyFragment: DialogFragment() {
+class PrivacyPolicyFragmentDialog: DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.policy_dialog, container, false)
