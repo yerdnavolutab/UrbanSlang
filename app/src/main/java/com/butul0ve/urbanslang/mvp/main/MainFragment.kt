@@ -1,5 +1,6 @@
 package com.butul0ve.urbanslang.mvp.main
 
+import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -8,6 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.view.*
+import android.widget.ImageView
 import android.widget.TextView
 import com.butul0ve.urbanslang.R
 import com.butul0ve.urbanslang.adapter.DefinitionAdapter
@@ -24,6 +26,7 @@ private const val QUERY = "query_extra_key"
 class MainFragment : Fragment(), MainMvpView {
 
     private lateinit var toolbar: Toolbar
+    private lateinit var menuToolbarIcon: ImageView
     private lateinit var definitionsRV: RecyclerView
     private lateinit var noResultTV: TextView
     private lateinit var presenter: MainMvpPresenter<MainMvpView>
@@ -52,6 +55,8 @@ class MainFragment : Fragment(), MainMvpView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
         toolbar = view.findViewById(R.id.toolbar)
+        searchView = view.findViewById(R.id.search_view)
+        menuToolbarIcon = view.findViewById(R.id.toolbar_icon)
         definitionsRV = view.findViewById(R.id.definitions_RV)
         noResultTV = view.findViewById(R.id.no_results_TV)
         return view
@@ -60,7 +65,9 @@ class MainFragment : Fragment(), MainMvpView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
-
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+        menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
+        initSearchView()
         if (savedInstanceState == null) {
 
             if (arguments == null) {
@@ -107,11 +114,34 @@ class MainFragment : Fragment(), MainMvpView {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.main_menu, menu)
-        val search = menu?.findItem(R.id.action_search)
-        searchView = search?.actionView as SearchView
-        searchView.maxWidth = Int.MAX_VALUE
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        if (::presenter.isInitialized) {
+            val definitions = presenter.getDefinitions()
+            if (definitions != null) {
+                outState.putParcelableArray(DEFINITIONS, definitions.toTypedArray())
+            }
+        }
+
+        if (::searchView.isInitialized && searchView.query != null) {
+            outState.putString(QUERY, searchView.query.toString())
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::presenter.isInitialized) {
+            if (arguments == null) {
+                arguments = Bundle()
+            }
+            onSaveInstanceState(arguments!!)
+        }
+    }
+
+    private fun initSearchView() {
+        val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
         if (::query.isInitialized && query.isNotEmpty()) {
             searchView.isIconified = false
             searchView.setQuery(query, false)
@@ -137,31 +167,6 @@ class MainFragment : Fragment(), MainMvpView {
         searchView.onActionViewExpanded()
         activity?.applicationContext?.let { searchView.hideKeyboard(it) }
         searchView.clearFocus()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        if (::presenter.isInitialized) {
-            val definitions = presenter.getDefinitions()
-            if (definitions != null) {
-                outState.putParcelableArray(DEFINITIONS, definitions.toTypedArray())
-            }
-        }
-
-        if (::searchView.isInitialized && searchView.query != null) {
-            outState.putString(QUERY, searchView.query.toString())
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if (::presenter.isInitialized) {
-            if (arguments == null) {
-                arguments = Bundle()
-            }
-            onSaveInstanceState(arguments!!)
-        }
     }
 
     override fun showResultSearch(adapter: DefinitionAdapter) {

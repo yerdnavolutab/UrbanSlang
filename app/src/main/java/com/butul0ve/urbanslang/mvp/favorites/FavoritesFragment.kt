@@ -1,5 +1,6 @@
 package com.butul0ve.urbanslang.mvp.favorites
 
+import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -8,6 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.view.*
+import android.widget.ImageView
 import android.widget.TextView
 import com.butul0ve.urbanslang.R
 import com.butul0ve.urbanslang.adapter.DefinitionAdapter
@@ -23,6 +25,7 @@ private const val QUERY = "query_extra_key"
 class FavoritesFragment : Fragment(), FavoritesMvpView {
 
     private lateinit var toolbar: Toolbar
+    private lateinit var menuToolbarIcon: ImageView
     private lateinit var definitionsRV: RecyclerView
     private lateinit var noResultTV: TextView
     private lateinit var searchView: SearchView
@@ -51,6 +54,8 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
         toolbar = view.findViewById(R.id.toolbar)
+        searchView = view.findViewById(R.id.search_view)
+        menuToolbarIcon = view.findViewById(R.id.toolbar_icon)
         definitionsRV = view.findViewById(R.id.definitions_RV)
         noResultTV = view.findViewById(R.id.no_results_TV)
         return view
@@ -59,6 +64,9 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+        menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
+        initSearchView()
         presenter = FavoritesPresenter(dbHelper)
         presenter.onAttach(this)
         if (savedInstanceState == null && arguments == null) {
@@ -99,11 +107,24 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.main_menu, menu)
-        val search = menu?.findItem(R.id.action_search)
-        searchView = search?.actionView as SearchView
-        searchView.maxWidth = Int.MAX_VALUE
+    override fun showResultSearch(definitionAdapter: DefinitionAdapter) {
+        noResultTV.visibility = View.GONE
+        definitionsRV.visibility = View.VISIBLE
+        definitionsRV.adapter = definitionAdapter
+    }
+
+    override fun showError() {
+        noResultTV.visibility = View.VISIBLE
+        definitionsRV.visibility = View.GONE
+    }
+
+    override fun onClick(definition: Definition) {
+        callback.onDefinitionClick(definition)
+    }
+
+    private fun initSearchView() {
+        val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
         if (::query.isInitialized && query.isNotEmpty()) {
             searchView.isIconified = false
             searchView.setQuery(query, false)
@@ -132,20 +153,5 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
         searchView.onActionViewExpanded()
         activity?.applicationContext?.let { searchView.hideKeyboard(it) }
         searchView.clearFocus()
-    }
-
-    override fun showResultSearch(definitionAdapter: DefinitionAdapter) {
-        noResultTV.visibility = View.GONE
-        definitionsRV.visibility = View.VISIBLE
-        definitionsRV.adapter = definitionAdapter
-    }
-
-    override fun showError() {
-        noResultTV.visibility = View.VISIBLE
-        definitionsRV.visibility = View.GONE
-    }
-
-    override fun onClick(definition: Definition) {
-        callback.onDefinitionClick(definition)
     }
 }

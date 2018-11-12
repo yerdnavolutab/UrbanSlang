@@ -19,4 +19,5 @@
     </string>
     <string name="privacy_policy_question">Do you agree with the privacy policy?</string>
     <string name="policy_link">https://github.com/batulovandrey/UrbanSlang/blob/master/privacy_policy.md</string>
+    <string name="action_settings">Settings</string>
 </resources>

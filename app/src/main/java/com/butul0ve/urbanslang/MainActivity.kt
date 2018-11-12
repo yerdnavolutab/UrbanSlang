@@ -114,6 +114,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         openFragment(fragment)
     }
 
+    override fun onMenuToolbarClick() {
+        drawerLayout.openDrawer(GravityCompat.START)
+    }
+
     private fun openFragment(fragment: Fragment) {
         val isNeedToAddToBackStack = fragment::class.java.simpleName == DetailFragment::class.java.simpleName
         if (isNeedToAddToBackStack) {
