@@ -7,4 +7,6 @@ interface CacheMvpPresenter<V: CacheMvpView>: MvpPresenter<V> {
     fun loadAllCachedDefinitions()
 
     fun filterCachedDefinitions(query: String)
+
+    fun clearCache()
 }
