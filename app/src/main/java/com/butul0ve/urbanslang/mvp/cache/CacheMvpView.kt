@@ -11,4 +11,6 @@ interface CacheMvpView: MvpView {
     fun showError()
 
     fun onClick(definition: Definition)
+
+    fun showSuccessSnackbar()
 }
