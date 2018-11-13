@@ -38,6 +38,17 @@ class CachePresenter<V : CacheMvpView>() : BasePresenter<V>(), CacheMvpPresenter
             .subscribe(getObserver())
     }
 
+    override fun clearCache() {
+        disposable.add(dbHelper.deleteCachedDefinitions()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (isViewAttached()) {
+                    mvpView?.showSuccessSnackbar()
+                }
+            })
+    }
+
     private fun getObserver(): Observer<List<Definition>> {
         return object : Observer<List<Definition>> {
 
