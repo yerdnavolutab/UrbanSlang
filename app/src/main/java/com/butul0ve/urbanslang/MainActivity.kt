@@ -1,6 +1,8 @@
 package com.butul0ve.urbanslang
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -95,6 +97,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 clearBackStack()
                 return true
             }
+            R.id.policy_privacy_item -> {
+                tryOpenPrivacyPolicy()
+                return true
+            }
         }
         return false
     }
@@ -164,5 +170,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun closeDrawer() {
         val handler = Handler()
         handler.postDelayed({ drawerLayout.closeDrawer(GravityCompat.START) }, 100)
+    }
+
+    private fun tryOpenPrivacyPolicy() {
+        val url = getString(R.string.policy_link)
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent)
+        }
     }
 }
