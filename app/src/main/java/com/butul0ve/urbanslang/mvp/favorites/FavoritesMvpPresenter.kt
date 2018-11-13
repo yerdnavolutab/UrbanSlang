@@ -7,4 +7,6 @@ interface FavoritesMvpPresenter<V: FavoritesMvpView>: MvpPresenter<V> {
     fun loadAllFavoritesDefinitions()
 
     fun filterFavoritesDefinitions(query: String)
+
+    fun clearFavorites()
 }

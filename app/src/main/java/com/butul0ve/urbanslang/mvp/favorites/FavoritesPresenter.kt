@@ -38,6 +38,17 @@ class FavoritesPresenter<V : FavoritesMvpView>() : BasePresenter<V>(), Favorites
             .subscribe(getObserver())
     }
 
+    override fun clearFavorites() {
+        disposable.add(dbHelper.deleteFavoritesDefinitions()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (isViewAttached()) {
+                    mvpView?.showSuccessSnackbar()
+                }
+            })
+    }
+
     override fun onItemClick(position: Int) {
         if (::definitionAdapter.isInitialized) {
             val definition = definitionAdapter.definitions[position]

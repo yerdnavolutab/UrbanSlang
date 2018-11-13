@@ -3,6 +3,8 @@ package com.butul0ve.urbanslang.mvp.favorites
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
@@ -29,6 +31,7 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
     private lateinit var definitionsRV: RecyclerView
     private lateinit var noResultTV: TextView
     private lateinit var searchView: SearchView
+    private lateinit var deleteFAB: FloatingActionButton
 
     private lateinit var presenter: FavoritesMvpPresenter<FavoritesMvpView>
     private lateinit var callback: FragmentCallback
@@ -58,6 +61,7 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
         menuToolbarIcon = view.findViewById(R.id.toolbar_icon)
         definitionsRV = view.findViewById(R.id.definitions_RV)
         noResultTV = view.findViewById(R.id.no_results_TV)
+        deleteFAB = view.findViewById(R.id.delete_FAB)
         return view
     }
 
@@ -66,6 +70,8 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
+        deleteFAB.show()
+        deleteFAB.setOnClickListener { showSnackbarClearFavorites() }
         initSearchView()
         presenter = FavoritesPresenter(dbHelper)
         presenter.onAttach(this)
@@ -122,6 +128,13 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
         callback.onDefinitionClick(definition)
     }
 
+    override fun showSuccessSnackbar() {
+        Snackbar.make(deleteFAB, getString(R.string.success), Snackbar.LENGTH_SHORT).show()
+        if (::presenter.isInitialized) {
+            presenter.loadAllFavoritesDefinitions()
+        }
+    }
+
     private fun initSearchView() {
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchView.setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
@@ -153,5 +166,12 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
         searchView.onActionViewExpanded()
         activity?.applicationContext?.let { searchView.hideKeyboard(it) }
         searchView.clearFocus()
+    }
+
+    private fun showSnackbarClearFavorites() {
+        Snackbar.make(deleteFAB, getText(R.string.delete_question), Snackbar.LENGTH_INDEFINITE)
+            .setAction(R.string.yes) {
+                presenter.clearFavorites()
+            }.show()
     }
 }
