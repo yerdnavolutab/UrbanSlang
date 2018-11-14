@@ -15,6 +15,8 @@ import com.butul0ve.urbanslang.adapter.WordAdapter
 import com.butul0ve.urbanslang.utils.readDictionaryFromAssets
 import java.io.IOException
 
+private const val LETTER = "letter_extra_key"
+
 class TrendsFragment : Fragment(), TrendsMvpView {
 
     private lateinit var lettersRV: RecyclerView
@@ -22,6 +24,7 @@ class TrendsFragment : Fragment(), TrendsMvpView {
     private lateinit var map: Map<String, List<String>>
     private lateinit var presenter: TrendsMvpPresenter<TrendsMvpView>
     private lateinit var callback: Callback
+    private var letter: String = "a"
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -41,6 +44,22 @@ class TrendsFragment : Fragment(), TrendsMvpView {
         presenter = TrendsPresenter(map)
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        if (arguments == null) {
+            arguments = Bundle()
+        }
+
+        onSaveInstanceState(arguments!!)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putString(LETTER, letter)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_trends, container, false)
         lettersRV = view.findViewById(R.id.letters_RV)
@@ -50,8 +69,20 @@ class TrendsFragment : Fragment(), TrendsMvpView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (savedInstanceState == null) {
+            if (arguments != null && arguments?.containsKey(LETTER)!!) {
+                letter = arguments?.getString(LETTER)!!
+            }
+        } else {
+            if (savedInstanceState.containsKey(LETTER)) {
+                letter = savedInstanceState.getString(LETTER)
+            }
+        }
+
         if (::presenter.isInitialized) {
             presenter.onAttach(this)
+            presenter.showWordsByLetter(letter)
         }
     }
 
@@ -65,6 +96,10 @@ class TrendsFragment : Fragment(), TrendsMvpView {
 
     override fun searchWord(word: String) {
         callback.onWordClick(word)
+    }
+
+    override fun saveLetter(letter: String) {
+        this.letter = letter
     }
 
     interface Callback {

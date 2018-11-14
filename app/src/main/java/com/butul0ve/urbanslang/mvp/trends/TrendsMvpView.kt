@@ -11,4 +11,6 @@ interface TrendsMvpView: MvpView {
     fun setWordAdapter(wordAdapter: WordAdapter)
 
     fun searchWord(word: String)
+
+    fun saveLetter(letter: String)
 }
