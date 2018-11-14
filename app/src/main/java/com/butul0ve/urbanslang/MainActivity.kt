@@ -20,6 +20,7 @@ import com.butul0ve.urbanslang.mvp.detail.DetailFragment
 import com.butul0ve.urbanslang.mvp.favorites.FavoritesFragment
 import com.butul0ve.urbanslang.mvp.main.MainFragment
 import com.butul0ve.urbanslang.mvp.trends.TrendsFragment
+import com.butul0ve.urbanslang.utils.AppRateImpl
 import com.butul0ve.urbanslang.utils.convertToFragment
 import com.butul0ve.urbanslang.utils.hideKeyboard
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -58,6 +59,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val fragment = className.convertToFragment()
             fragment.arguments = savedInstanceState.getBundle(ARGS_KEY)
         }
+
+        AppRateImpl().init(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
