@@ -1,5 +1,6 @@
 package com.butul0ve.urbanslang.mvp.detail
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -8,13 +9,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.butul0ve.urbanslang.R
+import com.butul0ve.urbanslang.UrbanSlangApp
 import com.butul0ve.urbanslang.bean.Definition
-import com.butul0ve.urbanslang.data.db.AppDbHelper
-import com.butul0ve.urbanslang.data.db.UrbanDatabase
+import javax.inject.Inject
 
 private const val DEFINITION = "definition_extra_key"
 
 class DetailFragment: Fragment(), DetailMvpView {
+
+    @Inject
+    lateinit var presenter: DetailMvpPresenter<DetailMvpView>
 
     private lateinit var wordTV: TextView
     private lateinit var definitionTV: TextView
@@ -22,12 +26,11 @@ class DetailFragment: Fragment(), DetailMvpView {
     private lateinit var permalinkTV: TextView
     private lateinit var favIV: ImageView
 
-    private lateinit var presenter: DetailMvpPresenter<DetailMvpView>
+    private var definitionId = -1L
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val dbHelper = AppDbHelper(UrbanDatabase.getInstance(context!!)!!)
-        presenter = DetailPresenter(dbHelper)
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        UrbanSlangApp.netComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -50,17 +53,19 @@ class DetailFragment: Fragment(), DetailMvpView {
                 authorTV.text = definition.author
                 permalinkTV.text = definition.permalink
                 favIV.setOnClickListener { presenter.handleClick(definition) }
-
-                if (::presenter.isInitialized) {
-                    presenter.onAttach(this)
-                    definition.id?.let { presenter.onViewInitialized(it) }
-                }
+                definition.id?.let { definitionId = it }
             }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onStart() {
+        super.onStart()
+        presenter.onAttach(this)
+        presenter.loadDefinition(definitionId)
+    }
+
+    override fun onStop() {
+        super.onStop()
         if (::presenter.isInitialized) {
             presenter.onDetach()
         }

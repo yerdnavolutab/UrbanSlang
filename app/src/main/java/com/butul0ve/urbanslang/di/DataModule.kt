@@ -6,6 +6,9 @@ import com.butul0ve.urbanslang.data.DataManager
 import com.butul0ve.urbanslang.data.db.AppDbHelper
 import com.butul0ve.urbanslang.data.db.DbHelper
 import com.butul0ve.urbanslang.data.db.UrbanDatabase
+import com.butul0ve.urbanslang.mvp.detail.DetailMvpPresenter
+import com.butul0ve.urbanslang.mvp.detail.DetailMvpView
+import com.butul0ve.urbanslang.mvp.detail.DetailPresenter
 import com.butul0ve.urbanslang.mvp.main.MainMvpPresenter
 import com.butul0ve.urbanslang.mvp.main.MainMvpView
 import com.butul0ve.urbanslang.mvp.main.MainPresenter
@@ -39,5 +42,11 @@ class DataModule {
     @Singleton
     fun provideMainPresenter(dataManager: DataManager): MainMvpPresenter<MainMvpView> {
         return MainPresenter(dataManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDetailPresenter(dataManager: DataManager): DetailMvpPresenter<DetailMvpView> {
+        return DetailPresenter(dataManager)
     }
 }
