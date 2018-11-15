@@ -24,7 +24,6 @@ class MainPresenter<V : MainMvpView> @Inject constructor(val dataManager: DataMa
 
     override fun onAttach(mvpView: V) {
         super.onAttach(mvpView)
-        Log.d("mainpresenter", "onattack")
 
         if (dataManager.tempDefinitions.isEmpty()) {
             getData()
@@ -32,11 +31,6 @@ class MainPresenter<V : MainMvpView> @Inject constructor(val dataManager: DataMa
             definitionAdapter = DefinitionAdapter(dataManager.tempDefinitions, this)
             mvpView.showResultSearch(definitionAdapter)
         }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.d("mainpresenter", "ondetach")
     }
 
     override fun getData(query: String) {
@@ -64,7 +58,6 @@ class MainPresenter<V : MainMvpView> @Inject constructor(val dataManager: DataMa
                 dataManager.updateTempDefinitions(t)
                 definitionAdapter = DefinitionAdapter(t, this@MainPresenter)
                 if (isViewAttached()) {
-                    Log.d("main presenter", "${t.size}")
                     mvpView?.showResultSearch(definitionAdapter)
                 } else {
                     Log.d("main presenter", "onSuccess view is not attached")
@@ -78,7 +71,6 @@ class MainPresenter<V : MainMvpView> @Inject constructor(val dataManager: DataMa
             override fun onError(e: Throwable) {
                 if (isViewAttached()) {
                     mvpView?.showError()
-                    Log.d("main presenter", "onError")
                 } else {
                     Log.d("main presenter", "onError view is not attached")
                 }
@@ -96,7 +88,6 @@ class MainPresenter<V : MainMvpView> @Inject constructor(val dataManager: DataMa
                         result.add(it)
                     },
                         {
-                            Log.d("main presenter", "error getting definition")
                             dataManager.saveDefinition(definition).subscribe({ id ->
                                 definition.id = id
                                 result.add(definition)

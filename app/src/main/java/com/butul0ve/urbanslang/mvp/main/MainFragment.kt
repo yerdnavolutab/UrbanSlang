@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
@@ -41,7 +40,6 @@ class MainFragment : Fragment(), MainMvpView {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         UrbanSlangApp.netComponent.inject(this)
-        Log.d("mainfragment", "onAttach")
         try {
             callback = context as FragmentCallback
         } catch (ex: ClassCastException) {
@@ -52,7 +50,6 @@ class MainFragment : Fragment(), MainMvpView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        Log.d("mainfragment", "onCreate")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -62,7 +59,6 @@ class MainFragment : Fragment(), MainMvpView {
         menuToolbarIcon = view.findViewById(R.id.toolbar_icon)
         definitionsRV = view.findViewById(R.id.definitions_RV)
         noResultTV = view.findViewById(R.id.no_results_TV)
-        Log.d("mainfragment", "onCreateView")
         return view
     }
 
@@ -71,7 +67,6 @@ class MainFragment : Fragment(), MainMvpView {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
-        Log.d("mainfragment", "onviewcreated presenter onattach")
         initSearchView()
 
         if (savedInstanceState != null && savedInstanceState.containsKey(QUERY)) {
@@ -119,11 +114,9 @@ class MainFragment : Fragment(), MainMvpView {
             override fun onQueryTextSubmit(text: String): Boolean {
                 if (::presenter.isInitialized) {
                     presenter.getData(text)
-                    Log.d("mainfragment", "onquerytextsubmit, presenter initialized")
                 } else {
                     presenter.onAttach(this@MainFragment)
                     presenter.getData(text)
-                    Log.d("mainfragment", "onquerytextsubmit, presenter is not initialized")
                 }
 
                 return true
