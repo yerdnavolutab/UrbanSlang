@@ -1,5 +1,6 @@
 package com.butul0ve.urbanslang.di
 
+import com.butul0ve.urbanslang.mvp.cache.CacheFragment
 import com.butul0ve.urbanslang.mvp.detail.DetailFragment
 import com.butul0ve.urbanslang.mvp.favorites.FavoritesFragment
 import com.butul0ve.urbanslang.mvp.main.MainFragment
@@ -15,4 +16,6 @@ interface NetComponent {
     fun inject(detailFragment: DetailFragment)
 
     fun inject(favoritesFragment: FavoritesFragment)
+
+    fun inject(cacheFragment: CacheFragment)
 }
