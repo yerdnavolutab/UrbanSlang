@@ -9,8 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.butul0ve.urbanslang.R
 import com.butul0ve.urbanslang.bean.Definition
-import com.butul0ve.urbanslang.db.AppDbHelper
-import com.butul0ve.urbanslang.db.UrbanDatabase
+import com.butul0ve.urbanslang.data.db.AppDbHelper
+import com.butul0ve.urbanslang.data.db.UrbanDatabase
 
 private const val DEFINITION = "definition_extra_key"
 

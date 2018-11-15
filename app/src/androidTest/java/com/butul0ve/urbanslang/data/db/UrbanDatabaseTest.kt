@@ -1,4 +1,4 @@
-package com.butul0ve.urbanslang.db
+package com.butul0ve.urbanslang.data.db
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.persistence.room.Room

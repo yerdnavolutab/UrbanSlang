@@ -13,6 +13,18 @@ const val IS_USER_CHOICE = "is_user_choice_key"
 
 class PrivacyPolicyFragmentDialog: DialogFragment() {
 
+    private lateinit var listener: PrivacyPolicyOnClickListener
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
+        try {
+            listener = context as PrivacyPolicyOnClickListener
+        } catch (ex: ClassCastException) {
+            throw ClassCastException("$context must implement PrivacyPolicyOnClickListener")
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.policy_dialog, container, false)
     }
@@ -25,11 +37,13 @@ class PrivacyPolicyFragmentDialog: DialogFragment() {
 
     private fun clickYes() {
         writeToSharedPreferences(true)
+        listener.initStatistics()
         dialog.dismiss()
     }
 
     private fun clickNo() {
         writeToSharedPreferences(false)
+        listener.disableStatistics()
         dialog.dismiss()
     }
 
@@ -42,5 +56,12 @@ class PrivacyPolicyFragmentDialog: DialogFragment() {
                 apply()
             }
         }
+    }
+
+    interface PrivacyPolicyOnClickListener {
+
+        fun initStatistics()
+
+        fun disableStatistics()
     }
 }

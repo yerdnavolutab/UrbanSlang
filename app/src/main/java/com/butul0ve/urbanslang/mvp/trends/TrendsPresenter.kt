@@ -22,17 +22,20 @@ class TrendsPresenter<V : TrendsMvpView>(private val dictionary: Map<String, Lis
         Collections.sort(letters)
         letterAdapter = LetterAdapter(letters, this)
         mvpView.setLetterAdapter(letterAdapter)
+    }
 
-        words = dictionary.values.toList()[0]
+    override fun showWordsByLetter(letter: String) {
+        words = dictionary[letter]!!
         Collections.sort(words)
         wordAdapter = WordAdapter(words, this)
-        mvpView.setWordAdapter(wordAdapter)
+        mvpView?.setWordAdapter(wordAdapter)
     }
 
     override fun onLetterClick(letter: String) {
         words = dictionary[letter]!!
         Collections.sort(words)
         wordAdapter.updateWords(words)
+        mvpView?.saveLetter(letter)
     }
 
     override fun onWordClick(word: String) {

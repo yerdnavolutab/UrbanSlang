@@ -8,38 +8,40 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import com.butul0ve.urbanslang.R
+import com.butul0ve.urbanslang.UrbanSlangApp
 import com.butul0ve.urbanslang.adapter.DefinitionAdapter
 import com.butul0ve.urbanslang.bean.Definition
-import com.butul0ve.urbanslang.db.AppDbHelper
-import com.butul0ve.urbanslang.db.DbHelper
-import com.butul0ve.urbanslang.db.UrbanDatabase
 import com.butul0ve.urbanslang.mvp.FragmentCallback
 import com.butul0ve.urbanslang.utils.hideKeyboard
+import javax.inject.Inject
 
-private const val DEFINITIONS = "definitions_extra_key"
 private const val QUERY = "query_extra_key"
+private const val RANDOM = "is_random_key"
 
 class MainFragment : Fragment(), MainMvpView {
+
+    @Inject
+    lateinit var presenter: MainMvpPresenter<MainMvpView>
 
     private lateinit var toolbar: Toolbar
     private lateinit var menuToolbarIcon: ImageView
     private lateinit var definitionsRV: RecyclerView
     private lateinit var noResultTV: TextView
-    private lateinit var presenter: MainMvpPresenter<MainMvpView>
     private lateinit var searchView: SearchView
 
-    private lateinit var dbHelper: DbHelper
     private lateinit var query: String
     private lateinit var callback: FragmentCallback
+    private var isRandom = false
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        dbHelper = AppDbHelper(UrbanDatabase.getInstance(context!!)!!)
-
+        UrbanSlangApp.netComponent.inject(this)
+        Log.d("mainfragment", "onAttach")
         try {
             callback = context as FragmentCallback
         } catch (ex: ClassCastException) {
@@ -50,6 +52,7 @@ class MainFragment : Fragment(), MainMvpView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        Log.d("mainfragment", "onCreate")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -59,6 +62,7 @@ class MainFragment : Fragment(), MainMvpView {
         menuToolbarIcon = view.findViewById(R.id.toolbar_icon)
         definitionsRV = view.findViewById(R.id.definitions_RV)
         noResultTV = view.findViewById(R.id.no_results_TV)
+        Log.d("mainfragment", "onCreateView")
         return view
     }
 
@@ -67,48 +71,30 @@ class MainFragment : Fragment(), MainMvpView {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
+        Log.d("mainfragment", "onviewcreated presenter onattach")
         initSearchView()
-        if (savedInstanceState == null) {
 
-            if (arguments == null) {
-                presenter = MainPresenter(dbHelper)
-                presenter.onAttach(this)
-                presenter.onFirstViewInitialized()
+        if (savedInstanceState != null && savedInstanceState.containsKey(QUERY)) {
+            query = savedInstanceState.getString(QUERY)!!
+        }
 
-            } else {
-
-                if (arguments!!.containsKey(DEFINITIONS)) {
-                    val list = arguments!!.getParcelableArray(DEFINITIONS) as Array<Definition>
-                    presenter = MainPresenter(dbHelper, list.asList())
-                    presenter.onAttach(this)
-                    presenter.onViewInitialized()
-                }
-
-                if (arguments!!.containsKey(QUERY) && arguments!!.getString(QUERY).isNotEmpty()) {
-                    presenter = MainPresenter(dbHelper)
-                    presenter.onAttach(this)
-                    query = arguments!!.getString(QUERY)
-                    presenter.getData(query)
-                }
-            }
-        } else {
-
-            if (savedInstanceState.containsKey(DEFINITIONS)) {
-                val list = savedInstanceState.getParcelableArray(DEFINITIONS) as Array<Definition>
-                presenter = MainPresenter(dbHelper, list.asList())
-                presenter.onAttach(this)
-                presenter.onViewInitialized()
-
-            }
-
-            if (savedInstanceState.containsKey(QUERY)) {
-                query = savedInstanceState.getString(QUERY)
-            }
+        if (arguments != null && arguments!!.containsKey(RANDOM)) {
+            isRandom = arguments!!.getBoolean(RANDOM)
+            arguments = null
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
+    override fun onStart() {
+        super.onStart()
+        presenter.onAttach(this)
+        if (isRandom) {
+            presenter.getData()
+            isRandom = false
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
         if (::presenter.isInitialized) {
             presenter.onDetach()
         }
@@ -117,25 +103,8 @@ class MainFragment : Fragment(), MainMvpView {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        if (::presenter.isInitialized) {
-            val definitions = presenter.getDefinitions()
-            if (definitions != null) {
-                outState.putParcelableArray(DEFINITIONS, definitions.toTypedArray())
-            }
-        }
-
         if (::searchView.isInitialized && searchView.query != null) {
             outState.putString(QUERY, searchView.query.toString())
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if (::presenter.isInitialized) {
-            if (arguments == null) {
-                arguments = Bundle()
-            }
-            onSaveInstanceState(arguments!!)
         }
     }
 
@@ -150,10 +119,11 @@ class MainFragment : Fragment(), MainMvpView {
             override fun onQueryTextSubmit(text: String): Boolean {
                 if (::presenter.isInitialized) {
                     presenter.getData(text)
+                    Log.d("mainfragment", "onquerytextsubmit, presenter initialized")
                 } else {
-                    presenter = MainPresenter()
                     presenter.onAttach(this@MainFragment)
                     presenter.getData(text)
+                    Log.d("mainfragment", "onquerytextsubmit, presenter is not initialized")
                 }
 
                 return true
@@ -172,6 +142,7 @@ class MainFragment : Fragment(), MainMvpView {
     override fun showResultSearch(adapter: DefinitionAdapter) {
         definitionsRV.visibility = View.VISIBLE
         noResultTV.visibility = View.GONE
+        adapter.notifyDataSetChanged()
         definitionsRV.adapter = adapter
     }
 
@@ -190,6 +161,14 @@ class MainFragment : Fragment(), MainMvpView {
             val fragment = MainFragment()
             val args = Bundle()
             args.putString(QUERY, word)
+            fragment.arguments = args
+            return fragment
+        }
+
+        fun newInstance(isRandom: Boolean): MainFragment {
+            val fragment = MainFragment()
+            val args = Bundle()
+            args.putBoolean(RANDOM, isRandom)
             fragment.arguments = args
             return fragment
         }

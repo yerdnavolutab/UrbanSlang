@@ -20,14 +20,16 @@ import com.butul0ve.urbanslang.mvp.detail.DetailFragment
 import com.butul0ve.urbanslang.mvp.favorites.FavoritesFragment
 import com.butul0ve.urbanslang.mvp.main.MainFragment
 import com.butul0ve.urbanslang.mvp.trends.TrendsFragment
+import com.butul0ve.urbanslang.utils.AppRateImpl
 import com.butul0ve.urbanslang.utils.convertToFragment
 import com.butul0ve.urbanslang.utils.hideKeyboard
+import com.google.firebase.analytics.FirebaseAnalytics
 
 private const val FRAGMENT_KEY = "fragment_extra_key"
 private const val ARGS_KEY = "arguments_extra_key"
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    TrendsFragment.Callback, FragmentCallback {
+    TrendsFragment.Callback, FragmentCallback, PrivacyPolicyFragmentDialog.PrivacyPolicyOnClickListener {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -46,6 +48,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             if (!isUserChoice) {
                 showPolicyDialogFragment()
+            } else {
+                val isAccepted = getSharedPreferences(packageName, Context.MODE_PRIVATE)
+                    .getBoolean(PRIVACY_POLICY_ACCEPTED, false)
+                initStatistics(isAccepted)
             }
 
         } else if (savedInstanceState.containsKey(FRAGMENT_KEY) && savedInstanceState.containsKey(ARGS_KEY)) {
@@ -53,6 +59,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val fragment = className.convertToFragment()
             fragment.arguments = savedInstanceState.getBundle(ARGS_KEY)
         }
+
+        AppRateImpl().init(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -90,7 +98,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return true
             }
             R.id.random_item -> {
-                openFragment(MainFragment())
+                openFragment(MainFragment.newInstance(true))
                 return true
             }
             R.id.search_item -> {
@@ -118,6 +126,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onMenuToolbarClick() {
         drawerLayout.openDrawer(GravityCompat.START)
+    }
+
+    override fun initStatistics() {
+        FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false)
+    }
+
+    override fun disableStatistics() {
+        FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false)
+        FirebaseAnalytics.getInstance(this).resetAnalyticsData()
     }
 
     private fun openFragment(fragment: Fragment) {
@@ -178,6 +195,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         intent.data = Uri.parse(url)
         if (intent.resolveActivity(packageManager) != null) {
             startActivity(intent)
+        }
+    }
+
+    private fun initStatistics(isAccepted: Boolean) {
+        if (isAccepted) {
+            initStatistics()
+        } else {
+            disableStatistics()
         }
     }
 }
