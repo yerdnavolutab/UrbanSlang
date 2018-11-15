@@ -2,7 +2,7 @@ package com.butul0ve.urbanslang.mvp.detail
 
 import android.util.Log
 import com.butul0ve.urbanslang.bean.Definition
-import com.butul0ve.urbanslang.db.DbHelper
+import com.butul0ve.urbanslang.data.db.DbHelper
 import com.butul0ve.urbanslang.mvp.BasePresenter
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
