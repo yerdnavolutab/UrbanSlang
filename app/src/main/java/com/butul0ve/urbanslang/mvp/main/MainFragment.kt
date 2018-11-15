@@ -21,6 +21,7 @@ import javax.inject.Inject
 
 private const val QUERY = "query_extra_key"
 private const val RANDOM = "is_random_key"
+private const val WORD = "word_extra_key"
 
 class MainFragment : Fragment(), MainMvpView {
 
@@ -34,6 +35,7 @@ class MainFragment : Fragment(), MainMvpView {
     private lateinit var searchView: SearchView
 
     private lateinit var query: String
+    private lateinit var word: String
     private lateinit var callback: FragmentCallback
     private var isRandom = false
 
@@ -73,8 +75,16 @@ class MainFragment : Fragment(), MainMvpView {
             query = savedInstanceState.getString(QUERY)!!
         }
 
-        if (arguments != null && arguments!!.containsKey(RANDOM)) {
-            isRandom = arguments!!.getBoolean(RANDOM)
+        if (arguments != null) {
+
+            if (arguments!!.containsKey(WORD)) {
+                word = arguments!!.getString(WORD)!!
+            }
+
+            if (arguments!!.containsKey(RANDOM)) {
+                isRandom = arguments!!.getBoolean(RANDOM)
+            }
+
             arguments = null
         }
     }
@@ -85,6 +95,8 @@ class MainFragment : Fragment(), MainMvpView {
         if (isRandom) {
             presenter.getData()
             isRandom = false
+        } else if (::word.isInitialized) {
+            presenter.getData(word)
         }
     }
 
@@ -153,7 +165,7 @@ class MainFragment : Fragment(), MainMvpView {
         fun newInstance(word: String): MainFragment {
             val fragment = MainFragment()
             val args = Bundle()
-            args.putString(QUERY, word)
+            args.putString(WORD, word)
             fragment.arguments = args
             return fragment
         }
