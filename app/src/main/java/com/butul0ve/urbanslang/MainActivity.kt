@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return true
             }
             R.id.random_item -> {
-                openFragment(MainFragment())
+                openFragment(MainFragment.newInstance(true))
                 return true
             }
             R.id.search_item -> {

@@ -1,4 +1,4 @@
-package com.butul0ve.urbanslang.db
+package com.butul0ve.urbanslang.data.db
 
 import android.arch.persistence.room.*
 import com.butul0ve.urbanslang.bean.Definition

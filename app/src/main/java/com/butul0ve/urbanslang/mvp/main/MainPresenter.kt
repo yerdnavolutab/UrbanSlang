@@ -5,100 +5,47 @@ import com.butul0ve.urbanslang.adapter.DefinitionAdapter
 import com.butul0ve.urbanslang.adapter.DefinitionClickListener
 import com.butul0ve.urbanslang.bean.BaseResponse
 import com.butul0ve.urbanslang.bean.Definition
-import com.butul0ve.urbanslang.db.DbHelper
+import com.butul0ve.urbanslang.data.DataManager
+import com.butul0ve.urbanslang.data.db.DbHelper
 import com.butul0ve.urbanslang.mvp.BasePresenter
-import com.butul0ve.urbanslang.network.AppNetworkHelper
 import com.butul0ve.urbanslang.network.NetworkHelper
-import com.butul0ve.urbanslang.network.ServerApi
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.SingleSource
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
-class MainPresenter<V : MainMvpView>() : BasePresenter<V>(), MainMvpPresenter<V>, DefinitionClickListener {
+class MainPresenter<V : MainMvpView> @Inject constructor(val dataManager: DataManager) : BasePresenter<V>(),
+    MainMvpPresenter<V>, DefinitionClickListener {
 
-    private val networkHelper: NetworkHelper
     private lateinit var definitionAdapter: DefinitionAdapter
-    private lateinit var dbHelper: DbHelper
 
-    constructor(dbHelper: DbHelper, definitions: List<Definition>) : this() {
-        definitionAdapter = DefinitionAdapter(definitions, this)
-        this.dbHelper = dbHelper
-    }
+    override fun onAttach(mvpView: V) {
+        super.onAttach(mvpView)
+        Log.d("mainpresenter", "onattack")
 
-    constructor(dbHelper: DbHelper) : this() {
-        this.dbHelper = dbHelper
-    }
-
-    init {
-        val url = "http://api.urbandictionary.com/"
-        val retrofit = Retrofit.Builder()
-            .baseUrl(url)
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .build()
-        networkHelper = AppNetworkHelper(retrofit.create(ServerApi::class.java))
-    }
-
-    override fun onFirstViewInitialized() {
-        networkHelper.getData()
-            .flatMap { saveDefinitions(it) }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(getObserver())
-    }
-
-    override fun onViewInitialized() {
-        if (isViewAttached()) {
-            if (::definitionAdapter.isInitialized) {
-                mvpView?.showResultSearch(definitionAdapter)
-            } else {
-                mvpView?.showError()
-            }
+        if (dataManager.tempDefinitions.isEmpty()) {
+            getData()
+        } else {
+            definitionAdapter = DefinitionAdapter(dataManager.tempDefinitions, this)
+            mvpView.showResultSearch(definitionAdapter)
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("mainpresenter", "ondetach")
     }
 
     override fun getData(query: String) {
-        networkHelper.getData(query)
+        dataManager.tempDefinitions.clear()
+        dataManager.getDataFromServer(query)
             .flatMap { saveDefinitions(it) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(getObserver())
-    }
-
-    private fun saveDefinitions(response: BaseResponse): SingleSource<List<Definition>> {
-        val result = ArrayList<Definition>()
-        response.definitions.forEach { definition ->
-            disposable.add(
-                dbHelper.findDefinition(definition.permalink)
-                    .subscribe({
-                        result.add(it)
-                    },
-                        {
-                            Log.d("main presenter", "error getting definition")
-                            dbHelper.saveDefinition(definition).subscribe({ id ->
-                                definition.id = id
-                                result.add(definition)
-                            },
-                                {
-                                    Log.d("main presenter", "error saving definition")
-                                })
-
-                        })
-            )
-        }
-        return Single.just(result)
-    }
-
-    override fun getDefinitions(): List<Definition>? {
-        return if (::definitionAdapter.isInitialized)
-            definitionAdapter.definitions
-        else null
     }
 
     override fun onItemClick(position: Int) {
@@ -114,9 +61,9 @@ class MainPresenter<V : MainMvpView>() : BasePresenter<V>(), MainMvpPresenter<V>
 
         return object : SingleObserver<List<Definition>> {
             override fun onSuccess(t: List<Definition>) {
+                dataManager.updateTempDefinitions(t)
+                definitionAdapter = DefinitionAdapter(t, this@MainPresenter)
                 if (isViewAttached()) {
-
-                    definitionAdapter = DefinitionAdapter(t, this@MainPresenter)
                     Log.d("main presenter", "${t.size}")
                     mvpView?.showResultSearch(definitionAdapter)
                 } else {
@@ -138,5 +85,29 @@ class MainPresenter<V : MainMvpView>() : BasePresenter<V>(), MainMvpPresenter<V>
             }
 
         }
+    }
+
+    private fun saveDefinitions(response: BaseResponse): SingleSource<List<Definition>> {
+        val result = ArrayList<Definition>()
+        response.definitions.forEach { definition ->
+            disposable.add(
+                dataManager.findDefinition(definition.permalink)
+                    .subscribe({
+                        result.add(it)
+                    },
+                        {
+                            Log.d("main presenter", "error getting definition")
+                            dataManager.saveDefinition(definition).subscribe({ id ->
+                                definition.id = id
+                                result.add(definition)
+                            },
+                                {
+                                    Log.d("main presenter", "error saving definition")
+                                })
+
+                        })
+            )
+        }
+        return Single.just(result)
     }
 }
