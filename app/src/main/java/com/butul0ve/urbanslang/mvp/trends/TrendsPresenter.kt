@@ -6,8 +6,10 @@ import com.butul0ve.urbanslang.adapter.WordAdapter
 import com.butul0ve.urbanslang.adapter.WordClickListener
 import com.butul0ve.urbanslang.mvp.BasePresenter
 import java.util.*
+import javax.inject.Inject
 
-class TrendsPresenter<V : TrendsMvpView>(private val dictionary: Map<String, List<String>>) : BasePresenter<V>(),
+class TrendsPresenter<V : TrendsMvpView> @Inject constructor(val dictionary: Map<String, List<String>>) :
+    BasePresenter<V>(),
     TrendsMvpPresenter<V>, LetterClickListener, WordClickListener {
 
     private lateinit var letterAdapter: LetterAdapter

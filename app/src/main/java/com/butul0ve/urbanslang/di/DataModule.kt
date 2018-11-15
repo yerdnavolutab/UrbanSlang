@@ -18,7 +18,11 @@ import com.butul0ve.urbanslang.mvp.favorites.FavoritesPresenter
 import com.butul0ve.urbanslang.mvp.main.MainMvpPresenter
 import com.butul0ve.urbanslang.mvp.main.MainMvpView
 import com.butul0ve.urbanslang.mvp.main.MainPresenter
+import com.butul0ve.urbanslang.mvp.trends.TrendsMvpPresenter
+import com.butul0ve.urbanslang.mvp.trends.TrendsMvpView
+import com.butul0ve.urbanslang.mvp.trends.TrendsPresenter
 import com.butul0ve.urbanslang.network.NetworkHelper
+import com.butul0ve.urbanslang.utils.readDictionaryFromAssets
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -66,5 +70,17 @@ class DataModule {
     @Singleton
     fun provideCachePresenter(dataManager: DataManager): CacheMvpPresenter<CacheMvpView> {
         return CachePresenter(dataManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDictionary(context: Context): MutableMap<String, List<String>> {
+        return readDictionaryFromAssets(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrendsPresenter(dictionary: MutableMap<String, List<String>>): TrendsMvpPresenter<TrendsMvpView> {
+        return TrendsPresenter(dictionary)
     }
 }
