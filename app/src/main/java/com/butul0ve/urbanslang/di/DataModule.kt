@@ -9,6 +9,9 @@ import com.butul0ve.urbanslang.data.db.UrbanDatabase
 import com.butul0ve.urbanslang.mvp.detail.DetailMvpPresenter
 import com.butul0ve.urbanslang.mvp.detail.DetailMvpView
 import com.butul0ve.urbanslang.mvp.detail.DetailPresenter
+import com.butul0ve.urbanslang.mvp.favorites.FavoritesMvpPresenter
+import com.butul0ve.urbanslang.mvp.favorites.FavoritesMvpView
+import com.butul0ve.urbanslang.mvp.favorites.FavoritesPresenter
 import com.butul0ve.urbanslang.mvp.main.MainMvpPresenter
 import com.butul0ve.urbanslang.mvp.main.MainMvpView
 import com.butul0ve.urbanslang.mvp.main.MainPresenter
@@ -48,5 +51,11 @@ class DataModule {
     @Singleton
     fun provideDetailPresenter(dataManager: DataManager): DetailMvpPresenter<DetailMvpView> {
         return DetailPresenter(dataManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFavoritesPresenter(dataManager: DataManager): FavoritesMvpPresenter<FavoritesMvpView> {
+        return FavoritesPresenter(dataManager)
     }
 }
