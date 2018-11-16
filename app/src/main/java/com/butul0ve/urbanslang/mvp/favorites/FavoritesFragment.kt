@@ -68,7 +68,10 @@ class FavoritesFragment : Fragment(), FavoritesMvpView {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
-
+        definitionsRV.setOnTouchListener { v, event ->
+            definitionsRV.hideKeyboard(activity!!)
+            false
+        }
         if (savedInstanceState != null && savedInstanceState.containsKey(QUERY)) {
             query = savedInstanceState.getString(QUERY)!!
         }
