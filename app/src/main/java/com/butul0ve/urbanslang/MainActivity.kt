@@ -125,7 +125,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onMenuToolbarClick() {
-        drawerLayout.openDrawer(GravityCompat.START)
+        val handler = Handler()
+        handler.postDelayed({drawerLayout.openDrawer(GravityCompat.START)}, 100)
+        navigationView.hideKeyboard(applicationContext)
     }
 
     override fun initStatistics() {
