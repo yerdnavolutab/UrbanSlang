@@ -73,23 +73,23 @@ class DetailFragment: Fragment(), DetailMvpView {
 
     override fun setFav(isFav: Boolean) {
         if (isFav) {
-            favIV.setImageResource(R.drawable.favorite_black)
-            favIV.tag = R.drawable.favorite_black
+            favIV.setImageResource(R.drawable.favorite_fill)
+            favIV.tag = R.drawable.favorite_fill
         } else {
-            favIV.setImageResource(R.drawable.favorite_white)
-            favIV.tag = R.drawable.favorite_white
+            favIV.setImageResource(R.drawable.favorite_empty)
+            favIV.tag = R.drawable.favorite_empty
         }
     }
 
     override fun changeFavImg() {
         when(favIV.tag) {
-            R.drawable.favorite_black -> {
-                favIV.setImageResource(R.drawable.favorite_white)
-                favIV.tag = R.drawable.favorite_white
+            R.drawable.favorite_fill -> {
+                favIV.setImageResource(R.drawable.favorite_empty)
+                favIV.tag = R.drawable.favorite_empty
             }
             else -> {
-                favIV.setImageResource(R.drawable.favorite_black)
-                favIV.tag = R.drawable.favorite_black
+                favIV.setImageResource(R.drawable.favorite_fill)
+                favIV.tag = R.drawable.favorite_fill
             }
         }
     }
