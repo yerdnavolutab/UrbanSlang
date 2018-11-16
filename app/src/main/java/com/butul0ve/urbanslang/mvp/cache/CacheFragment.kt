@@ -14,17 +14,19 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import com.butul0ve.urbanslang.R
+import com.butul0ve.urbanslang.UrbanSlangApp
 import com.butul0ve.urbanslang.adapter.DefinitionAdapter
 import com.butul0ve.urbanslang.bean.Definition
-import com.butul0ve.urbanslang.data.db.AppDbHelper
-import com.butul0ve.urbanslang.data.db.DbHelper
-import com.butul0ve.urbanslang.data.db.UrbanDatabase
 import com.butul0ve.urbanslang.mvp.FragmentCallback
 import com.butul0ve.urbanslang.utils.hideKeyboard
+import javax.inject.Inject
 
 private const val QUERY = "query_extra_key"
 
 class CacheFragment : Fragment(), CacheMvpView {
+
+    @Inject
+    lateinit var presenter: CacheMvpPresenter<CacheMvpView>
 
     private lateinit var toolbar: Toolbar
     private lateinit var menuToolbarIcon: ImageView
@@ -33,14 +35,12 @@ class CacheFragment : Fragment(), CacheMvpView {
     private lateinit var searchView: SearchView
     private lateinit var deleteFAB: FloatingActionButton
 
-    private lateinit var presenter: CacheMvpPresenter<CacheMvpView>
     private lateinit var callback: FragmentCallback
-    private lateinit var dbHelper: DbHelper
     private lateinit var query: String
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        dbHelper = AppDbHelper(UrbanDatabase.getInstance(context!!)!!)
+        UrbanSlangApp.netComponent.inject(this)
         try {
             callback = context as FragmentCallback
         } catch (ex: ClassCastException) {
@@ -68,25 +68,34 @@ class CacheFragment : Fragment(), CacheMvpView {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+        definitionsRV.setOnTouchListener { v, event ->
+            definitionsRV.hideKeyboard(activity!!)
+            false
+        }
+        if (savedInstanceState != null && savedInstanceState.containsKey(QUERY)) {
+            query = savedInstanceState.getString(QUERY)!!
+        }
+
         menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
         deleteFAB.show()
         deleteFAB.setOnClickListener { showSnackbarClearCache() }
         initSearchView()
-        presenter = CachePresenter(dbHelper)
-        presenter.onAttach(this)
-        if (savedInstanceState == null && arguments == null) {
-            presenter.loadAllCachedDefinitions()
-        } else {
-            if (savedInstanceState != null && savedInstanceState.containsKey(QUERY)) {
-                query = savedInstanceState.getString(QUERY)
-            } else if (arguments != null && arguments?.containsKey(QUERY)!!) {
-                query = arguments?.getString(QUERY)!!
-            }
+    }
 
-            if (::query.isInitialized) {
-                presenter.filterCachedDefinitions(query)
-            }
+    override fun onStart() {
+        super.onStart()
+        presenter.onAttach(this)
+        if (searchView.query.toString().isNotEmpty()) {
+            query = searchView.query.toString()
+            presenter.filterCachedDefinitions(query)
+        } else {
+            presenter.loadAllCachedDefinitions()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.onDetach()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -94,21 +103,6 @@ class CacheFragment : Fragment(), CacheMvpView {
 
         if (searchView.query != null) {
             outState.putString(QUERY, searchView.query.toString())
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-        onSaveInstanceState(arguments!!)
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        if (::presenter.isInitialized) {
-            presenter.onDetach()
         }
     }
 

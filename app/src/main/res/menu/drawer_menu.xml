@@ -11,11 +11,11 @@
                 android:title="@string/search" />
         <item
                 android:id="@+id/favorites_item"
-                android:icon="@drawable/favorite_black"
+                android:icon="@drawable/favorite_fill"
                 android:title="@string/favorites" />
         <item
                 android:id="@+id/cached_item"
-                android:icon="@drawable/favorite_white"
+                android:icon="@drawable/favorite_empty"
                 android:title="@string/cache" />
         <item
                 android:id="@+id/trend_item"

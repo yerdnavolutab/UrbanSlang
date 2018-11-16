@@ -19,7 +19,7 @@ fun String.convertToFragment(): Fragment {
 }
 
 @Throws(IOException::class)
-fun readDictionaryFromAssets(context: Context): Map<String, List<String>> {
+fun readDictionaryFromAssets(context: Context): MutableMap<String, List<String>> {
     val dictionary = HashMap<String, List<String>>()
     val alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray()
 
@@ -37,7 +37,7 @@ fun readDictionaryFromAssets(context: Context): Map<String, List<String>> {
         reader.close()
     }
 
-    return dictionary
+    return dictionary.toMutableMap()
 }
 
 fun View.hideKeyboard(context: Context) {

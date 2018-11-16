@@ -8,9 +8,9 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.butul0ve.urbanslang.R
 import com.butul0ve.urbanslang.UrbanSlangApp
@@ -22,6 +22,7 @@ import javax.inject.Inject
 
 private const val QUERY = "query_extra_key"
 private const val RANDOM = "is_random_key"
+private const val WORD = "word_extra_key"
 
 class MainFragment : Fragment(), MainMvpView {
 
@@ -33,15 +34,16 @@ class MainFragment : Fragment(), MainMvpView {
     private lateinit var definitionsRV: RecyclerView
     private lateinit var noResultTV: TextView
     private lateinit var searchView: SearchView
+    private lateinit var progressBar: ProgressBar
 
     private lateinit var query: String
+    private lateinit var word: String
     private lateinit var callback: FragmentCallback
     private var isRandom = false
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         UrbanSlangApp.netComponent.inject(this)
-        Log.d("mainfragment", "onAttach")
         try {
             callback = context as FragmentCallback
         } catch (ex: ClassCastException) {
@@ -52,7 +54,6 @@ class MainFragment : Fragment(), MainMvpView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        Log.d("mainfragment", "onCreate")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -62,7 +63,7 @@ class MainFragment : Fragment(), MainMvpView {
         menuToolbarIcon = view.findViewById(R.id.toolbar_icon)
         definitionsRV = view.findViewById(R.id.definitions_RV)
         noResultTV = view.findViewById(R.id.no_results_TV)
-        Log.d("mainfragment", "onCreateView")
+        progressBar = view.findViewById(R.id.progress_bar)
         return view
     }
 
@@ -71,15 +72,25 @@ class MainFragment : Fragment(), MainMvpView {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
-        Log.d("mainfragment", "onviewcreated presenter onattach")
         initSearchView()
-
+        definitionsRV.setOnTouchListener { v, event ->
+            definitionsRV.hideKeyboard(activity!!)
+            false
+        }
         if (savedInstanceState != null && savedInstanceState.containsKey(QUERY)) {
             query = savedInstanceState.getString(QUERY)!!
         }
 
-        if (arguments != null && arguments!!.containsKey(RANDOM)) {
-            isRandom = arguments!!.getBoolean(RANDOM)
+        if (arguments != null) {
+
+            if (arguments!!.containsKey(WORD)) {
+                word = arguments!!.getString(WORD)!!
+            }
+
+            if (arguments!!.containsKey(RANDOM)) {
+                isRandom = arguments!!.getBoolean(RANDOM)
+            }
+
             arguments = null
         }
     }
@@ -90,6 +101,8 @@ class MainFragment : Fragment(), MainMvpView {
         if (isRandom) {
             presenter.getData()
             isRandom = false
+        } else if (::word.isInitialized) {
+            presenter.getData(word)
         }
     }
 
@@ -119,11 +132,7 @@ class MainFragment : Fragment(), MainMvpView {
             override fun onQueryTextSubmit(text: String): Boolean {
                 if (::presenter.isInitialized) {
                     presenter.getData(text)
-                    Log.d("mainfragment", "onquerytextsubmit, presenter initialized")
-                } else {
-                    presenter.onAttach(this@MainFragment)
-                    presenter.getData(text)
-                    Log.d("mainfragment", "onquerytextsubmit, presenter is not initialized")
+                    activity?.applicationContext?.let { searchView.hideKeyboard(it) }
                 }
 
                 return true
@@ -144,15 +153,23 @@ class MainFragment : Fragment(), MainMvpView {
         noResultTV.visibility = View.GONE
         adapter.notifyDataSetChanged()
         definitionsRV.adapter = adapter
+        progressBar.visibility = View.GONE
     }
 
     override fun showError() {
         definitionsRV.visibility = View.GONE
         noResultTV.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
     }
 
     override fun onClick(definition: Definition) {
         callback.onDefinitionClick(definition)
+    }
+
+    override fun showProgressbar() {
+        definitionsRV.visibility = View.GONE
+        noResultTV.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
     }
 
     companion object {
@@ -160,7 +177,7 @@ class MainFragment : Fragment(), MainMvpView {
         fun newInstance(word: String): MainFragment {
             val fragment = MainFragment()
             val args = Bundle()
-            args.putString(QUERY, word)
+            args.putString(WORD, word)
             fragment.arguments = args
             return fragment
         }

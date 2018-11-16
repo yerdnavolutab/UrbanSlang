@@ -6,52 +6,34 @@ import com.butul0ve.urbanslang.R
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.butul0ve.urbanslang.UrbanSlangApp
 import com.butul0ve.urbanslang.adapter.LetterAdapter
 import com.butul0ve.urbanslang.adapter.WordAdapter
-import com.butul0ve.urbanslang.utils.readDictionaryFromAssets
-import java.io.IOException
+import javax.inject.Inject
 
 private const val LETTER = "letter_extra_key"
 
 class TrendsFragment : Fragment(), TrendsMvpView {
 
+    @Inject
+    lateinit var presenter: TrendsMvpPresenter<TrendsMvpView>
+
     private lateinit var lettersRV: RecyclerView
     private lateinit var wordsRV: RecyclerView
-    private lateinit var map: Map<String, List<String>>
-    private lateinit var presenter: TrendsMvpPresenter<TrendsMvpView>
     private lateinit var callback: Callback
     private var letter: String = "a"
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-
+        UrbanSlangApp.netComponent.inject(this)
         try {
-            map = readDictionaryFromAssets(context!!)
             callback = context as Callback
         } catch (ex: ClassCastException) {
             throw ClassCastException("${activity?.localClassName} must implement TrendsFragment.Callback")
-        } catch (e: IOException) {
-            Log.d("trends fragment", "error reading files from assets ${e.localizedMessage}")
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        presenter = TrendsPresenter(map)
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        onSaveInstanceState(arguments!!)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -70,20 +52,30 @@ class TrendsFragment : Fragment(), TrendsMvpView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (savedInstanceState == null) {
-            if (arguments != null && arguments?.containsKey(LETTER)!!) {
-                letter = arguments?.getString(LETTER)!!
+        if (savedInstanceState != null && savedInstanceState.containsKey(LETTER)) {
+            letter = savedInstanceState.getString(LETTER)!!
+
+            if (arguments == null) {
+                arguments = Bundle()
             }
-        } else {
-            if (savedInstanceState.containsKey(LETTER)) {
-                letter = savedInstanceState.getString(LETTER)
-            }
+
+            arguments!!.putString(LETTER, letter)
         }
 
-        if (::presenter.isInitialized) {
-            presenter.onAttach(this)
-            presenter.showWordsByLetter(letter)
+        if (arguments != null && arguments!!.containsKey(LETTER)) {
+            letter = arguments!!.getString(LETTER)!!
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        presenter.onAttach(this)
+        presenter.showWordsByLetter(letter)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.onDetach()
     }
 
     override fun setLetterAdapter(letterAdapter: LetterAdapter) {
