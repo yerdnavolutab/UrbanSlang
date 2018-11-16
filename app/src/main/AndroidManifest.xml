@@ -20,6 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+                android:name="com.google.android.gms.ads.AdActivity"
+                android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+                android:theme="@android:style/Theme.Translucent" />
 
         <service android:name=".service.UrbanSlangMessagingService"
                  android:exported="true">
@@ -37,6 +41,10 @@
                 android:resource="@drawable/ic_stat_name"/>
 
         <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+
+        <meta-data
+                android:name="com.google.android.gms.ads.APPLICATION_ID"
+                android:value="ca-app-pub-5862949534463205~7684044638"/>
     </application>
 
 </manifest>
