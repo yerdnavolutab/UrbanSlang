@@ -2,7 +2,10 @@ package com.butul0ve.urbanslang
 
 import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
+import android.media.AudioManager.*
 import android.net.Uri
+import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -23,10 +26,17 @@ import com.butul0ve.urbanslang.mvp.trends.TrendsFragment
 import com.butul0ve.urbanslang.utils.AppRateImpl
 import com.butul0ve.urbanslang.utils.convertToFragment
 import com.butul0ve.urbanslang.utils.hideKeyboard
+import com.google.ads.mediation.admob.AdMobAdapter
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.analytics.FirebaseAnalytics
+import java.util.concurrent.atomic.AtomicInteger
 
 private const val FRAGMENT_KEY = "fragment_extra_key"
 private const val ARGS_KEY = "arguments_extra_key"
+private val ADS_COUNT = AtomicInteger(0)
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     TrendsFragment.Callback, FragmentCallback, PrivacyPolicyFragmentDialog.PrivacyPolicyOnClickListener {
@@ -34,10 +44,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
     private lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var interstitialAd: InterstitialAd
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        MobileAds.initialize(this, BuildConfig.ADMOB_APP_ID)
         initUI()
 
         if (savedInstanceState == null) {
@@ -48,10 +61,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             if (!isUserChoice) {
                 showPolicyDialogFragment()
-            } else {
-                val isAccepted = getSharedPreferences(packageName, Context.MODE_PRIVATE)
-                    .getBoolean(PRIVACY_POLICY_ACCEPTED, false)
-                initStatistics(isAccepted)
             }
 
         } else if (savedInstanceState.containsKey(FRAGMENT_KEY) && savedInstanceState.containsKey(ARGS_KEY)) {
@@ -59,6 +68,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val fragment = className.convertToFragment()
             fragment.arguments = savedInstanceState.getBundle(ARGS_KEY)
         }
+
+        val isAccepted = getSharedPreferences(
+            packageName,
+            Context.MODE_PRIVATE
+        ).getBoolean(PRIVACY_POLICY_ACCEPTED, false)
+
+        initStatistics(isAccepted)
+        loadAd(isAccepted)
 
         AppRateImpl().init(this)
     }
@@ -125,7 +142,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onMenuToolbarClick() {
-        drawerLayout.openDrawer(GravityCompat.START)
+        val handler = Handler()
+        handler.postDelayed({ drawerLayout.openDrawer(GravityCompat.START) }, 100)
+        navigationView.hideKeyboard(applicationContext)
     }
 
     override fun initStatistics() {
@@ -138,6 +157,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun openFragment(fragment: Fragment) {
+
+        if (ADS_COUNT.get() == 7) {
+            if (interstitialAd.isLoaded) {
+                interstitialAd.show()
+            }
+        }
+
         if (fragment is MainFragment) {
             clearBackStack()
             supportFragmentManager.beginTransaction().apply {
@@ -145,7 +171,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 commit()
             }
-
+            ADS_COUNT.incrementAndGet()
             return
         }
 
@@ -203,6 +229,80 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             initStatistics()
         } else {
             disableStatistics()
+        }
+    }
+
+    private fun loadAd(isAccepted: Boolean) {
+        if (isAccepted) loadPersonalizeAd()
+        else loadUnpersonalizeAd()
+    }
+
+    private fun loadUnpersonalizeAd() {
+        val extras = Bundle()
+        extras.putString("npa", "1")
+        val request = AdRequest.Builder()
+            .addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
+            .addTestDevice("4B2B6D802FD90E79BA0E4ED30CE2832C")
+            .build()
+
+        interstitialAd = InterstitialAd(this).apply {
+            adUnitId = BuildConfig.AD_MOB_UNIT_ID
+
+            adListener = object : AdListener() {
+                override fun onAdOpened() {
+                    super.onAdOpened()
+                    muteSound()
+                }
+
+                override fun onAdClosed() {
+                    super.onAdClosed()
+                    unmuteSound()
+                }
+            }
+
+            loadAd(request)
+        }
+    }
+
+    private fun loadPersonalizeAd() {
+        interstitialAd = InterstitialAd(this).apply {
+            adUnitId = BuildConfig.AD_MOB_UNIT_ID
+
+            adListener = object : AdListener() {
+                override fun onAdOpened() {
+                    super.onAdOpened()
+                    muteSound()
+                }
+
+                override fun onAdClosed() {
+                    super.onAdClosed()
+                    unmuteSound()
+                }
+            }
+
+            loadAd(
+                AdRequest.Builder()
+                    .addTestDevice("4B2B6D802FD90E79BA0E4ED30CE2832C")
+                    .build()
+            )
+        }
+    }
+
+    private fun muteSound() {
+        val manager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            manager.adjustStreamVolume(STREAM_MUSIC, ADJUST_MUTE, 0)
+        } else {
+            manager.setStreamMute(STREAM_MUSIC, true)
+        }
+    }
+
+    private fun unmuteSound() {
+        val manager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            manager.adjustStreamVolume(STREAM_MUSIC, ADJUST_UNMUTE, 0)
+        } else {
+            manager.setStreamMute(AudioManager.STREAM_MUSIC, false)
         }
     }
 }

@@ -4,42 +4,43 @@ import android.util.Log
 import com.butul0ve.urbanslang.adapter.DefinitionAdapter
 import com.butul0ve.urbanslang.adapter.DefinitionClickListener
 import com.butul0ve.urbanslang.bean.Definition
-import com.butul0ve.urbanslang.data.db.DbHelper
+import com.butul0ve.urbanslang.data.DataManager
 import com.butul0ve.urbanslang.mvp.BasePresenter
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class FavoritesPresenter<V : FavoritesMvpView>() : BasePresenter<V>(), FavoritesMvpPresenter<V>,
+class FavoritesPresenter<V : FavoritesMvpView> @Inject constructor(val dataManager: DataManager) : BasePresenter<V>(),
+    FavoritesMvpPresenter<V>,
     DefinitionClickListener {
 
     private lateinit var definitionAdapter: DefinitionAdapter
-    private lateinit var dbHelper: DbHelper
-
-    constructor(dbHelper: DbHelper) : this() {
-        this.dbHelper = dbHelper
-    }
 
     override fun loadAllFavoritesDefinitions() {
-        dbHelper.getFavoritesDefinitions()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(getObserver())
+        if (isViewAttached()) {
+            dataManager.getFavoritesDefinitions()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getObserver())
+        }
     }
 
     override fun filterFavoritesDefinitions(query: String) {
-        dbHelper.getFavoritesDefinitions()
-            .subscribeOn(Schedulers.io())
-            .map {
-                it.filter { it.word.contains(query, true) }
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(getObserver())
+        if (isViewAttached()) {
+            dataManager.getFavoritesDefinitions()
+                .subscribeOn(Schedulers.io())
+                .map {
+                    it.filter { it.word.contains(query, true) }
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getObserver())
+        }
     }
 
     override fun clearFavorites() {
-        disposable.add(dbHelper.deleteFavoritesDefinitions()
+        disposable.add(dataManager.deleteFavoritesDefinitions()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {

@@ -5,7 +5,7 @@ import com.butul0ve.urbanslang.mvp.MvpPresenter
 
 interface DetailMvpPresenter<V: DetailMvpView>: MvpPresenter<V> {
 
-    fun onViewInitialized(id: Long)
+    fun loadDefinition(id: Long)
 
     fun handleClick(definition: Definition)
 }
