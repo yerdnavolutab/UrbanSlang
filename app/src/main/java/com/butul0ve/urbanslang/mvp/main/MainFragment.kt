@@ -129,9 +129,7 @@ class MainFragment : Fragment(), MainMvpView {
             override fun onQueryTextSubmit(text: String): Boolean {
                 if (::presenter.isInitialized) {
                     presenter.getData(text)
-                } else {
-                    presenter.onAttach(this@MainFragment)
-                    presenter.getData(text)
+                    activity?.applicationContext?.let { searchView.hideKeyboard(it) }
                 }
 
                 return true
