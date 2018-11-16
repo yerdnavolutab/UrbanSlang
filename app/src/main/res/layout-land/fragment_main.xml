@@ -1,0 +1,60 @@
+<android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+    <include android:id="@+id/toolbar"
+             layout="@layout/toolbar"/>
+
+    <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            app:layout_behavior="@string/bottom_sheet_behavior"
+            tools:visibility="visible"/>
+
+    <TextView
+            android:id="@+id/no_results_TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="245dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal"
+            android:padding="16dp"
+            tools:visibility="visible"
+            android:text="@string/no_results"
+            android:visibility="gone"/>
+
+    <android.support.v7.widget.RecyclerView
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:paddingTop="8dp"
+            android:layout_marginTop="?android:attr/actionBarSize"
+            android:id="@+id/definitions_RV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/definitions"
+            android:visibility="invisible"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            tools:visibility="visible"/>
+
+    <android.support.design.widget.FloatingActionButton
+            android:id="@+id/delete_FAB"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            app:backgroundTint="@android:color/darker_gray"
+            app:layout_anchor="@id/definitions_RV"
+            app:layout_anchorGravity="bottom|right|end"
+            android:src="@android:drawable/ic_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+</android.support.design.widget.CoordinatorLayout>
