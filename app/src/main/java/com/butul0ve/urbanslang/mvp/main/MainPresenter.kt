@@ -34,12 +34,15 @@ class MainPresenter<V : MainMvpView> @Inject constructor(val dataManager: DataMa
     }
 
     override fun getData(query: String) {
-        dataManager.tempDefinitions.clear()
-        dataManager.getDataFromServer(query)
-            .flatMap { saveDefinitions(it) }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(getObserver())
+        if (isViewAttached()) {
+            mvpView?.showProgressbar()
+            dataManager.tempDefinitions.clear()
+            dataManager.getDataFromServer(query)
+                .flatMap { saveDefinitions(it) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getObserver())
+        }
     }
 
     override fun onItemClick(position: Int) {

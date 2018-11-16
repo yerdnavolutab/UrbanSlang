@@ -10,6 +10,7 @@ import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.butul0ve.urbanslang.R
 import com.butul0ve.urbanslang.UrbanSlangApp
@@ -33,6 +34,7 @@ class MainFragment : Fragment(), MainMvpView {
     private lateinit var definitionsRV: RecyclerView
     private lateinit var noResultTV: TextView
     private lateinit var searchView: SearchView
+    private lateinit var progressBar: ProgressBar
 
     private lateinit var query: String
     private lateinit var word: String
@@ -61,6 +63,7 @@ class MainFragment : Fragment(), MainMvpView {
         menuToolbarIcon = view.findViewById(R.id.toolbar_icon)
         definitionsRV = view.findViewById(R.id.definitions_RV)
         noResultTV = view.findViewById(R.id.no_results_TV)
+        progressBar = view.findViewById(R.id.progress_bar)
         return view
     }
 
@@ -149,15 +152,23 @@ class MainFragment : Fragment(), MainMvpView {
         noResultTV.visibility = View.GONE
         adapter.notifyDataSetChanged()
         definitionsRV.adapter = adapter
+        progressBar.visibility = View.GONE
     }
 
     override fun showError() {
         definitionsRV.visibility = View.GONE
         noResultTV.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
     }
 
     override fun onClick(definition: Definition) {
         callback.onDefinitionClick(definition)
+    }
+
+    override fun showProgressbar() {
+        definitionsRV.visibility = View.GONE
+        noResultTV.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
     }
 
     companion object {

@@ -11,4 +11,6 @@ interface MainMvpView: MvpView {
     fun showError()
 
     fun onClick(definition: Definition)
+
+    fun showProgressbar()
 }
