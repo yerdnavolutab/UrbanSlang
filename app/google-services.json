@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "420208834012",
+    "firebase_url": "https://urbanslang-butul0ve.firebaseio.com",
+    "project_id": "urbanslang-butul0ve",
+    "storage_bucket": "urbanslang-butul0ve.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:420208834012:android:d16e79e19032f19c",
+        "android_client_info": {
+          "package_name": "com.butul0ve.urbanslang"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "420208834012-hukpvaksa8g9r14n35p7kpujn9ts6d38.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_so_TUv3lsawMLUTvS_joaWTwk9zH4pI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
