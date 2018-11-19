@@ -41,6 +41,8 @@ private val ADS_COUNT = AtomicInteger(0)
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     TrendsFragment.Callback, FragmentCallback, PrivacyPolicyFragmentDialog.PrivacyPolicyOnClickListener {
 
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
+
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
     private lateinit var toggle: ActionBarDrawerToggle
@@ -148,12 +150,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun initStatistics() {
-        FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+        firebaseAnalytics.setAnalyticsCollectionEnabled(true)
     }
 
     override fun disableStatistics() {
-        FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false)
-        FirebaseAnalytics.getInstance(this).resetAnalyticsData()
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+        firebaseAnalytics.setAnalyticsCollectionEnabled(false)
+        firebaseAnalytics.resetAnalyticsData()
     }
 
     private fun openFragment(fragment: Fragment) {
