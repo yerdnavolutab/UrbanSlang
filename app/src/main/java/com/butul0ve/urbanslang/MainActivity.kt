@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun initStatistics() {
-        FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false)
+        FirebaseAnalytics.getInstance(this)
     }
 
     override fun disableStatistics() {
