@@ -24,6 +24,7 @@ import com.butul0ve.urbanslang.mvp.favorites.FavoritesFragment
 import com.butul0ve.urbanslang.mvp.main.MainFragment
 import com.butul0ve.urbanslang.mvp.trends.TrendsFragment
 import com.butul0ve.urbanslang.utils.AppRateImpl
+import com.butul0ve.urbanslang.utils.SharedPreferencesManager
 import com.butul0ve.urbanslang.utils.convertToFragment
 import com.butul0ve.urbanslang.utils.hideKeyboard
 import com.google.ads.mediation.admob.AdMobAdapter
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (savedInstanceState == null) {
             openFragment(MainFragment())
 
-            val isUserChoice = getSharedPreferences(packageName, Context.MODE_PRIVATE)
+            val isUserChoice = SharedPreferencesManager.getInstance(this)
                 .getBoolean(IS_USER_CHOICE, false)
 
             if (!isUserChoice) {
@@ -71,10 +72,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             fragment.arguments = savedInstanceState.getBundle(ARGS_KEY)
         }
 
-        val isAccepted = getSharedPreferences(
-            packageName,
-            Context.MODE_PRIVATE
-        ).getBoolean(PRIVACY_POLICY_ACCEPTED, false)
+        val isAccepted = SharedPreferencesManager.getInstance(this)
+            .getBoolean(PRIVACY_POLICY_ACCEPTED, false)
 
         initStatistics(isAccepted)
         loadAd(isAccepted)
