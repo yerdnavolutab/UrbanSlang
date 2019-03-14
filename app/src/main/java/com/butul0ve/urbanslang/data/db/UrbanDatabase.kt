@@ -7,7 +7,7 @@ import android.content.Context
 import com.butul0ve.urbanslang.bean.Definition
 
 
-@Database(entities = [Definition::class], version = 1)
+@Database(entities = [Definition::class], version = 1, exportSchema = false)
 abstract class UrbanDatabase: RoomDatabase() {
 
     abstract fun definitionDataDao(): DefinitionDao
