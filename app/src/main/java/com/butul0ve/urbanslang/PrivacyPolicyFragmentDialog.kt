@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import com.butul0ve.urbanslang.utils.SharedPreferencesManager
 
 const val PRIVACY_POLICY_ACCEPTED = "privacy_policy_accepted_key"
 const val IS_USER_CHOICE = "is_user_choice_key"
@@ -49,12 +50,8 @@ class PrivacyPolicyFragmentDialog: DialogFragment() {
 
     private fun writeToSharedPreferences(value: Boolean) {
         activity?.let {
-            val sharedPreferences = it.getSharedPreferences(it.packageName, Context.MODE_PRIVATE)
-            sharedPreferences.edit().apply {
-                putBoolean(PRIVACY_POLICY_ACCEPTED, value)
-                putBoolean(IS_USER_CHOICE, true)
-                apply()
-            }
+            SharedPreferencesManager.putBoolean(it, PRIVACY_POLICY_ACCEPTED, value)
+            SharedPreferencesManager.putBoolean(it, IS_USER_CHOICE, true)
         }
     }
 

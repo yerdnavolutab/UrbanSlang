@@ -24,11 +24,6 @@ android {
         }
     }
 
-    buildTypes.each {
-        it.buildConfigField 'String', 'ADMOB_APP_ID', ADMOB_APP_ID
-        it.buildConfigField 'String', 'AD_MOB_UNIT_ID', AD_MOB_UNIT_ID
-    }
-
     androidExtensions {
         experimental = true
     }
@@ -80,8 +75,11 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.19'
     compileOnly 'org.glassfish:javax.annotation:10.0-b28'
 
-    // ads
-    implementation 'com.google.android.gms:play-services-ads:17.1.1'
+    // moxy
+    implementation "com.arello-mobile:moxy:$moxy_version"
+    implementation "com.arello-mobile:moxy-app-compat:$moxy_version"
+    implementation "com.android.support:appcompat-v7:$support_lib_version"
+    kapt "com.arello-mobile:moxy-compiler:$moxy_version"
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.18.0'
