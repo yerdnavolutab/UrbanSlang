@@ -1,6 +1,6 @@
 package com.butul0ve.urbanslang
 
-import android.support.multidex.MultiDexApplication
+import androidx.multidex.MultiDexApplication
 import com.butul0ve.urbanslang.di.*
 
 class UrbanSlangApp: MultiDexApplication() {

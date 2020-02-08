@@ -2,7 +2,7 @@ package com.butul0ve.urbanslang.mvp.detail
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 private const val DEFINITION = "definition_extra_key"
 
-class DetailFragment: Fragment(), DetailMvpView {
+class DetailFragment: androidx.fragment.app.Fragment(), DetailMvpView {
 
     @Inject
     lateinit var presenter: DetailMvpPresenter<DetailMvpView>

@@ -1,9 +1,9 @@
 package com.butul0ve.urbanslang.data.db
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.persistence.room.Room
-import android.support.test.InstrumentationRegistry
-import android.support.test.runner.AndroidJUnit4
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.room.Room
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.butul0ve.urbanslang.bean.Definition
 import org.junit.After
 import org.junit.Assert.*

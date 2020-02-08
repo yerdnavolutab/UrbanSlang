@@ -2,7 +2,7 @@ package com.butul0ve.urbanslang
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +12,7 @@ import com.butul0ve.urbanslang.utils.SharedPreferencesManager
 const val PRIVACY_POLICY_ACCEPTED = "privacy_policy_accepted_key"
 const val IS_USER_CHOICE = "is_user_choice_key"
 
-class PrivacyPolicyFragmentDialog: DialogFragment() {
+class PrivacyPolicyFragmentDialog: androidx.fragment.app.DialogFragment() {
 
     private lateinit var listener: PrivacyPolicyOnClickListener
 

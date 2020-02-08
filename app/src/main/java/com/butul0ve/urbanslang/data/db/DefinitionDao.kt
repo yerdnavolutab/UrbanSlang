@@ -1,6 +1,6 @@
 package com.butul0ve.urbanslang.data.db
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.butul0ve.urbanslang.bean.Definition
 import io.reactivex.Flowable
 import io.reactivex.Single

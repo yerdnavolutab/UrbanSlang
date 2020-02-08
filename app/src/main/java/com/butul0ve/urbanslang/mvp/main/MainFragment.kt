@@ -3,11 +3,11 @@ package com.butul0ve.urbanslang.mvp.main
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
-import android.support.v7.widget.Toolbar
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import android.view.*
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -24,14 +24,14 @@ private const val QUERY = "query_extra_key"
 private const val RANDOM = "is_random_key"
 private const val WORD = "word_extra_key"
 
-class MainFragment : Fragment(), MainMvpView {
+class MainFragment : androidx.fragment.app.Fragment(), MainMvpView {
 
     @Inject
     lateinit var presenter: MainMvpPresenter<MainMvpView>
 
     private lateinit var toolbar: Toolbar
     private lateinit var menuToolbarIcon: ImageView
-    private lateinit var definitionsRV: RecyclerView
+    private lateinit var definitionsRV: androidx.recyclerview.widget.RecyclerView
     private lateinit var noResultTV: TextView
     private lateinit var searchView: SearchView
     private lateinit var progressBar: ProgressBar
