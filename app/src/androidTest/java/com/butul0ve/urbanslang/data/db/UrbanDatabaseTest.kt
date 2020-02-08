@@ -41,7 +41,7 @@ class UrbanDatabaseTest {
     @Before
     fun initDb() {
         db = Room.inMemoryDatabaseBuilder(
-            InstrumentationRegistry.getContext(),
+            InstrumentationRegistry.getInstrumentation().context,
             UrbanDatabase::class.java
         )
             .allowMainThreadQueries()
