@@ -1,6 +1,6 @@
 package com.butul0ve.urbanslang.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +10,7 @@ import com.butul0ve.urbanslang.R
 class WordAdapter(
     private val words: List<String>,
     private val listener: WordClickListener
-) : RecyclerView.Adapter<WordAdapter.WordViewHolder>() {
+) : androidx.recyclerview.widget.RecyclerView.Adapter<WordAdapter.WordViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.word_item, null)
@@ -33,7 +33,7 @@ class WordAdapter(
         notifyDataSetChanged()
     }
 
-    inner class WordViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    inner class WordViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private val wordButton: Button = view.findViewById(R.id.word_button)
 

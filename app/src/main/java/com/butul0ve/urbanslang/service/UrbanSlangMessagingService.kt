@@ -6,15 +6,15 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.butul0ve.urbanslang.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import java.util.concurrent.atomic.AtomicInteger
 import com.butul0ve.urbanslang.R
 import android.graphics.BitmapFactory
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 
 private const val NOTIFICATION_CHANNEL_ID = "25007"
 

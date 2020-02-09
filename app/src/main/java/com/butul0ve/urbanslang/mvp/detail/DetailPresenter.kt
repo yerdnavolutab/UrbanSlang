@@ -20,8 +20,8 @@ class DetailPresenter<V : DetailMvpView> @Inject constructor(val dataManager: Da
             .subscribe(getObserver())
     }
 
-    override fun handleClick(definition: Definition) {
-        dataManager.getDefinitionById(definition.id)
+    override fun handleClick(id: Long) {
+        dataManager.getDefinitionById(id)
             .subscribeOn(Schedulers.io())
             .subscribe(getClickObserver())
     }
@@ -29,9 +29,11 @@ class DetailPresenter<V : DetailMvpView> @Inject constructor(val dataManager: Da
     private fun getObserver(): SingleObserver<Definition> {
         return object : SingleObserver<Definition> {
 
-            override fun onSuccess(t: Definition) {
+            override fun onSuccess(definition: Definition) {
                 if (isViewAttached()) {
-                    if (t.favorite == 1) {
+                    mvpView?.setDefinition(definition)
+
+                    if (definition.favorite == 1) {
                         mvpView?.setFav(true)
                     } else {
                         mvpView?.setFav(false)

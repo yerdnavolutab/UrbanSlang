@@ -4,8 +4,8 @@ import android.content.Context
 import com.butul0ve.urbanslang.R
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,17 +16,17 @@ import javax.inject.Inject
 
 private const val LETTER = "letter_extra_key"
 
-class TrendsFragment : Fragment(), TrendsMvpView {
+class TrendsFragment : androidx.fragment.app.Fragment(), TrendsMvpView {
 
     @Inject
     lateinit var presenter: TrendsMvpPresenter<TrendsMvpView>
 
-    private lateinit var lettersRV: RecyclerView
-    private lateinit var wordsRV: RecyclerView
+    private lateinit var lettersRV: androidx.recyclerview.widget.RecyclerView
+    private lateinit var wordsRV: androidx.recyclerview.widget.RecyclerView
     private lateinit var callback: Callback
     private var letter: String = "a"
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         UrbanSlangApp.netComponent.inject(this)
         try {

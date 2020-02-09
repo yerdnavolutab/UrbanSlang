@@ -2,15 +2,15 @@ package com.butul0ve.urbanslang
 
 import android.content.Intent
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.NavigationView
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentTransaction
-import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
+import com.google.android.material.navigation.NavigationView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.app.ActionBarDrawerToggle
 import android.view.MenuItem
 import com.butul0ve.urbanslang.bean.Definition
 import com.butul0ve.urbanslang.mvp.FragmentCallback
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
-    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var drawerLayout: androidx.drawerlayout.widget.DrawerLayout
     private lateinit var navigationView: NavigationView
     private lateinit var toggle: ActionBarDrawerToggle
 
@@ -52,8 +52,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         } else if (savedInstanceState.containsKey(FRAGMENT_KEY) && savedInstanceState.containsKey(ARGS_KEY)) {
             val className = savedInstanceState.getString(FRAGMENT_KEY)
-            val fragment = className.convertToFragment()
-            fragment.arguments = savedInstanceState.getBundle(ARGS_KEY)
+            val fragment = className?.convertToFragment()
+            fragment?.arguments = savedInstanceState.getBundle(ARGS_KEY)
         }
 
         val isAccepted = SharedPreferencesManager.getInstance(this)
@@ -64,14 +64,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         AppRateImpl().init(this)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val manager = supportFragmentManager
         val currentFragment = manager.findFragmentById(R.id.frame_layout)
         if (currentFragment != null) {
             val args = currentFragment.arguments
-            outState?.putString(FRAGMENT_KEY, currentFragment::class.java.simpleName)
-            outState?.putBundle(ARGS_KEY, args)
+            outState.putString(FRAGMENT_KEY, currentFragment::class.java.simpleName)
+            outState.putBundle(ARGS_KEY, args)
         }
     }
 
@@ -142,12 +142,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         firebaseAnalytics.resetAnalyticsData()
     }
 
-    private fun openFragment(fragment: Fragment) {
+    private fun openFragment(fragment: androidx.fragment.app.Fragment) {
         if (fragment is MainFragment) {
             clearBackStack()
             supportFragmentManager.beginTransaction().apply {
                 replace(R.id.frame_layout, fragment)
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 commit()
             }
             return
@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         supportFragmentManager.beginTransaction().apply {
             addToBackStack(tag)
             replace(R.id.frame_layout, fragment)
-            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             commit()
         }
     }

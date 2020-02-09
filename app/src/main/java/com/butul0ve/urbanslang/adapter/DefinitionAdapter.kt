@@ -1,6 +1,6 @@
 package com.butul0ve.urbanslang.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +12,7 @@ class DefinitionAdapter(
     val definitions: List<Definition>,
     private val clickListener: DefinitionClickListener
 ) :
-    RecyclerView.Adapter<DefinitionAdapter.DefinitionHolder>() {
+    androidx.recyclerview.widget.RecyclerView.Adapter<DefinitionAdapter.DefinitionHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DefinitionHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.definition_item, null)
@@ -35,7 +35,7 @@ class DefinitionAdapter(
         notifyDataSetChanged()
     }
 
-    inner class DefinitionHolder(view: View) : RecyclerView.ViewHolder(view),
+    inner class DefinitionHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view),
         View.OnClickListener {
 
         private val wordTV: TextView = view.findViewById(R.id.word_TV)

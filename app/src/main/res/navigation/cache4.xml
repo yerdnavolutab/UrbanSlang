@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/cache4"
+    app:startDestination="@id/cacheFragment">
+
+    <fragment
+        android:id="@+id/cacheFragment"
+        android:name="com.butul0ve.urbanslang.mvp.cache.CacheFragment"
+        android:label="CacheFragment" >
+        <action
+            android:id="@+id/action_cacheFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.butul0ve.urbanslang.mvp.detail.DetailFragment"
+        android:label="DetailFragment">
+        <argument
+            android:name="definition_id"
+            app:argType="long"
+            android:defaultValue="-1L" />
+    </fragment>
+</navigation>

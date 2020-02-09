@@ -1,4 +1,4 @@
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -32,7 +32,7 @@
             android:text="@string/no_results"
             android:visibility="gone"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_marginTop="?android:attr/actionBarSize"
             android:id="@+id/definitions_RV"
@@ -41,10 +41,10 @@
             android:layout_below="@id/toolbar"
             android:contentDescription="@string/definitions"
             android:visibility="invisible"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:visibility="visible"/>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/delete_FAB"
             android:visibility="gone"
             tools:visibility="visible"
@@ -57,4 +57,4 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,22 +1,24 @@
 package com.butul0ve.urbanslang.mvp.main
 
+import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
-import android.support.v7.widget.Toolbar
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import android.view.*
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.butul0ve.urbanslang.R
 import com.butul0ve.urbanslang.UrbanSlangApp
 import com.butul0ve.urbanslang.adapter.DefinitionAdapter
 import com.butul0ve.urbanslang.bean.Definition
-import com.butul0ve.urbanslang.mvp.FragmentCallback
 import com.butul0ve.urbanslang.utils.hideKeyboard
 import javax.inject.Inject
 
@@ -38,17 +40,13 @@ class MainFragment : Fragment(), MainMvpView {
 
     private lateinit var query: String
     private lateinit var word: String
-    private lateinit var callback: FragmentCallback
     private var isRandom = false
 
-    override fun onAttach(context: Context?) {
+    private val args: MainFragmentArgs by navArgs()
+
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         UrbanSlangApp.netComponent.inject(this)
-        try {
-            callback = context as FragmentCallback
-        } catch (ex: ClassCastException) {
-            throw ClassCastException("${activity?.localClassName} must implement FragmentCallback")
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,11 +65,12 @@ class MainFragment : Fragment(), MainMvpView {
         return view
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
-        menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
+//        menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
         initSearchView()
         definitionsRV.setOnTouchListener { v, event ->
             definitionsRV.hideKeyboard(activity!!)
@@ -81,14 +80,12 @@ class MainFragment : Fragment(), MainMvpView {
             query = savedInstanceState.getString(QUERY)!!
         }
 
+        isRandom = args.isRandom
+
         if (arguments != null) {
 
             if (arguments!!.containsKey(WORD)) {
                 word = arguments!!.getString(WORD)!!
-            }
-
-            if (arguments!!.containsKey(RANDOM)) {
-                isRandom = arguments!!.getBoolean(RANDOM)
             }
 
             arguments = null
@@ -163,7 +160,7 @@ class MainFragment : Fragment(), MainMvpView {
     }
 
     override fun onClick(definition: Definition) {
-        callback.onDefinitionClick(definition)
+        definition.id?.let { findNavController().navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it)) }
     }
 
     override fun showProgressbar() {
