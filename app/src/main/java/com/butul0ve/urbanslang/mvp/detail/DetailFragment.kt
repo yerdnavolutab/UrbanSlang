@@ -28,7 +28,7 @@ class DetailFragment: androidx.fragment.app.Fragment(), DetailMvpView {
 
     private var definitionId = -1L
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         UrbanSlangApp.netComponent.inject(this)
     }

@@ -38,7 +38,7 @@ class FavoritesFragment : androidx.fragment.app.Fragment(), FavoritesMvpView {
     private lateinit var callback: FragmentCallback
     private lateinit var query: String
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         UrbanSlangApp.netComponent.inject(this)
         try {

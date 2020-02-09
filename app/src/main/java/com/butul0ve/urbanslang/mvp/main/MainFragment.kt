@@ -41,7 +41,7 @@ class MainFragment : androidx.fragment.app.Fragment(), MainMvpView {
     private lateinit var callback: FragmentCallback
     private var isRandom = false
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         UrbanSlangApp.netComponent.inject(this)
         try {

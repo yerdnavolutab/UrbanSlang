@@ -52,8 +52,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         } else if (savedInstanceState.containsKey(FRAGMENT_KEY) && savedInstanceState.containsKey(ARGS_KEY)) {
             val className = savedInstanceState.getString(FRAGMENT_KEY)
-            val fragment = className.convertToFragment()
-            fragment.arguments = savedInstanceState.getBundle(ARGS_KEY)
+            val fragment = className?.convertToFragment()
+            fragment?.arguments = savedInstanceState.getBundle(ARGS_KEY)
         }
 
         val isAccepted = SharedPreferencesManager.getInstance(this)
@@ -64,14 +64,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         AppRateImpl().init(this)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val manager = supportFragmentManager
         val currentFragment = manager.findFragmentById(R.id.frame_layout)
         if (currentFragment != null) {
             val args = currentFragment.arguments
-            outState?.putString(FRAGMENT_KEY, currentFragment::class.java.simpleName)
-            outState?.putBundle(ARGS_KEY, args)
+            outState.putString(FRAGMENT_KEY, currentFragment::class.java.simpleName)
+            outState.putBundle(ARGS_KEY, args)
         }
     }
 

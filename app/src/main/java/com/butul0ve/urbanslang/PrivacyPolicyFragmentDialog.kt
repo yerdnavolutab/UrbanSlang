@@ -16,7 +16,7 @@ class PrivacyPolicyFragmentDialog: androidx.fragment.app.DialogFragment() {
 
     private lateinit var listener: PrivacyPolicyOnClickListener
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
 
         try {
@@ -39,13 +39,13 @@ class PrivacyPolicyFragmentDialog: androidx.fragment.app.DialogFragment() {
     private fun clickYes() {
         writeToSharedPreferences(true)
         listener.initStatistics()
-        dialog.dismiss()
+        dialog?.dismiss()
     }
 
     private fun clickNo() {
         writeToSharedPreferences(false)
         listener.disableStatistics()
-        dialog.dismiss()
+        dialog?.dismiss()
     }
 
     private fun writeToSharedPreferences(value: Boolean) {

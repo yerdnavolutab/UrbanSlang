@@ -26,7 +26,7 @@ class TrendsFragment : androidx.fragment.app.Fragment(), TrendsMvpView {
     private lateinit var callback: Callback
     private var letter: String = "a"
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         UrbanSlangApp.netComponent.inject(this)
         try {
