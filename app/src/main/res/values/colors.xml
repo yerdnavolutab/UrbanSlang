@@ -7,4 +7,6 @@
     <color name="colorPinky">#ffa0d1</color>
     <color name="colorGreeny">#99f4a4</color>
     <color name="black">#000000</color>
+    <color name="colorPrimaryLight">#474646</color>
+    <color name="top_navigation_color">#DDDBDB</color>
 </resources>
