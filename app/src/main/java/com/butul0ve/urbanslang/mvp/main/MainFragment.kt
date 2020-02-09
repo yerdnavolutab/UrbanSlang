@@ -1,5 +1,6 @@
 package com.butul0ve.urbanslang.mvp.main
 
+import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
@@ -12,11 +13,12 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.butul0ve.urbanslang.R
 import com.butul0ve.urbanslang.UrbanSlangApp
 import com.butul0ve.urbanslang.adapter.DefinitionAdapter
 import com.butul0ve.urbanslang.bean.Definition
-import com.butul0ve.urbanslang.mvp.FragmentCallback
 import com.butul0ve.urbanslang.utils.hideKeyboard
 import javax.inject.Inject
 
@@ -24,31 +26,27 @@ private const val QUERY = "query_extra_key"
 private const val RANDOM = "is_random_key"
 private const val WORD = "word_extra_key"
 
-class MainFragment : androidx.fragment.app.Fragment(), MainMvpView {
+class MainFragment : Fragment(), MainMvpView {
 
     @Inject
     lateinit var presenter: MainMvpPresenter<MainMvpView>
 
     private lateinit var toolbar: Toolbar
     private lateinit var menuToolbarIcon: ImageView
-    private lateinit var definitionsRV: androidx.recyclerview.widget.RecyclerView
+    private lateinit var definitionsRV: RecyclerView
     private lateinit var noResultTV: TextView
     private lateinit var searchView: SearchView
     private lateinit var progressBar: ProgressBar
 
     private lateinit var query: String
     private lateinit var word: String
-    private lateinit var callback: FragmentCallback
     private var isRandom = false
+
+    private val args: MainFragmentArgs by navArgs()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         UrbanSlangApp.netComponent.inject(this)
-        try {
-            callback = context as FragmentCallback
-        } catch (ex: ClassCastException) {
-            throw ClassCastException("${activity?.localClassName} must implement FragmentCallback")
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,11 +65,12 @@ class MainFragment : androidx.fragment.app.Fragment(), MainMvpView {
         return view
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
-        menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
+//        menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
         initSearchView()
         definitionsRV.setOnTouchListener { v, event ->
             definitionsRV.hideKeyboard(activity!!)
@@ -81,14 +80,12 @@ class MainFragment : androidx.fragment.app.Fragment(), MainMvpView {
             query = savedInstanceState.getString(QUERY)!!
         }
 
+        isRandom = args.isRandom
+
         if (arguments != null) {
 
             if (arguments!!.containsKey(WORD)) {
                 word = arguments!!.getString(WORD)!!
-            }
-
-            if (arguments!!.containsKey(RANDOM)) {
-                isRandom = arguments!!.getBoolean(RANDOM)
             }
 
             arguments = null
@@ -163,7 +160,7 @@ class MainFragment : androidx.fragment.app.Fragment(), MainMvpView {
     }
 
     override fun onClick(definition: Definition) {
-        callback.onDefinitionClick(definition)
+        definition.id?.let { findNavController().navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it)) }
     }
 
     override fun showProgressbar() {

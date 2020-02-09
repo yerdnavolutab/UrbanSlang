@@ -35,17 +35,11 @@ class FavoritesFragment : androidx.fragment.app.Fragment(), FavoritesMvpView {
     private lateinit var searchView: SearchView
     private lateinit var deleteFAB: FloatingActionButton
 
-    private lateinit var callback: FragmentCallback
     private lateinit var query: String
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         UrbanSlangApp.netComponent.inject(this)
-        try {
-            callback = context as FragmentCallback
-        } catch (ex: ClassCastException) {
-            throw ClassCastException("${activity?.localClassName} must implement FragmentCallback")
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +70,7 @@ class FavoritesFragment : androidx.fragment.app.Fragment(), FavoritesMvpView {
             query = savedInstanceState.getString(QUERY)!!
         }
 
-        menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
+//        menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
         deleteFAB.show()
         deleteFAB.setOnClickListener { showSnackbarClearFavorites() }
         initSearchView()
@@ -118,7 +112,7 @@ class FavoritesFragment : androidx.fragment.app.Fragment(), FavoritesMvpView {
     }
 
     override fun onClick(definition: Definition) {
-        callback.onDefinitionClick(definition)
+//        callback.onDefinitionClick(definition)
     }
 
     override fun showSuccessSnackbar() {

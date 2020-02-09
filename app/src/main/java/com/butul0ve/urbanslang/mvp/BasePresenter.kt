@@ -1,7 +1,6 @@
 package com.butul0ve.urbanslang.mvp
 
 import io.reactivex.disposables.CompositeDisposable
-import java.lang.IllegalStateException
 
 /**
  * Base class that implements the Presenter interface and provides a base implementation for
@@ -12,20 +11,15 @@ open class BasePresenter<V : MvpView> : MvpPresenter<V> {
     var mvpView: V? = null
         private set
 
-    protected lateinit var disposable: CompositeDisposable
+    protected val disposable: CompositeDisposable by lazy { CompositeDisposable() }
 
     override fun onAttach(mvpView: V) {
         this.mvpView = mvpView
-        disposable = CompositeDisposable()
     }
 
     override fun onDetach() {
         mvpView = null
-        if (::disposable.isInitialized) {
-            disposable.clear()
-        } else {
-            throw IllegalStateException("view must be attached")
-        }
+        disposable.clear()
     }
 
     /**

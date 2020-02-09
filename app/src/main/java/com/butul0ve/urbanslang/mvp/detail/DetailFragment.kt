@@ -2,12 +2,12 @@ package com.butul0ve.urbanslang.mvp.detail
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.fragment.navArgs
 import com.butul0ve.urbanslang.R
 import com.butul0ve.urbanslang.UrbanSlangApp
 import com.butul0ve.urbanslang.bean.Definition
@@ -28,6 +28,8 @@ class DetailFragment: androidx.fragment.app.Fragment(), DetailMvpView {
 
     private var definitionId = -1L
 
+    private val args: DetailFragmentArgs by navArgs()
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         UrbanSlangApp.netComponent.inject(this)
@@ -45,17 +47,9 @@ class DetailFragment: androidx.fragment.app.Fragment(), DetailMvpView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (arguments != null && arguments?.containsKey(DEFINITION)!!) {
-            val definition = arguments?.getParcelable<Definition>(DEFINITION)
-            if (definition != null) {
-                wordTV.text = definition.word
-                definitionTV.text = definition.definition
-                authorTV.text = definition.author
-                permalinkTV.text = definition.permalink
-                favIV.setOnClickListener { presenter.handleClick(definition) }
-                definition.id?.let { definitionId = it }
-            }
-        }
+
+        presenter.loadDefinition(args.definitionId)
+        favIV.setOnClickListener { presenter.handleClick(args.definitionId) }
     }
 
     override fun onStart() {
@@ -69,6 +63,14 @@ class DetailFragment: androidx.fragment.app.Fragment(), DetailMvpView {
         if (::presenter.isInitialized) {
             presenter.onDetach()
         }
+    }
+
+    override fun setDefinition(definition: Definition) {
+        wordTV.text = definition.word
+        definitionTV.text = definition.definition
+        authorTV.text = definition.author
+        permalinkTV.text = definition.permalink
+        definition.id?.let { definitionId = it }
     }
 
     override fun setFav(isFav: Boolean) {

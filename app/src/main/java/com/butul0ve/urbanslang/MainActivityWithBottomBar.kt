@@ -12,8 +12,7 @@ import com.butul0ve.urbanslang.mvp.FragmentCallback
 import com.butul0ve.urbanslang.utils.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivityWithBottomBar: AppCompatActivity(),
-    FragmentCallback {
+class MainActivityWithBottomBar: AppCompatActivity() {
 
     private var currentNavController: LiveData<NavController>? = null
 
@@ -41,13 +40,5 @@ class MainActivityWithBottomBar: AppCompatActivity(),
         })
 
         currentNavController = controller
-    }
-
-    override fun onDefinitionClick(definition: Definition) {
-
-    }
-
-    override fun onMenuToolbarClick() {
-
     }
 }
