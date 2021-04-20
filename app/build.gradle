@@ -8,7 +8,7 @@ apply plugin: 'io.fabric'
 apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.butul0ve.urbanslang"
         minSdkVersion 16
