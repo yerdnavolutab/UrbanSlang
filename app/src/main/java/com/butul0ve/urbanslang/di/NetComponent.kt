@@ -13,6 +13,7 @@ import javax.inject.Singleton
 interface NetComponent {
 
     fun inject(mainFragment: MainFragment)
+    fun inject(mainFragment: com.butul0ve.urbanslang.mvvm.main.MainFragment)
 
     fun inject(detailFragment: DetailFragment)
 

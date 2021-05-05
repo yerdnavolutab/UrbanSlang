@@ -42,7 +42,7 @@ class MainFragment : Fragment(), MainMvpView {
     private lateinit var word: String
     private var isRandom = false
 
-    private val args: MainFragmentArgs by navArgs()
+//    private val args: MainFragmentArgs by navArgs()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -80,7 +80,7 @@ class MainFragment : Fragment(), MainMvpView {
             query = savedInstanceState.getString(QUERY)!!
         }
 
-        isRandom = args.isRandom
+//        isRandom = args.isRandom
 
         if (arguments != null) {
 
@@ -160,7 +160,7 @@ class MainFragment : Fragment(), MainMvpView {
     }
 
     override fun onClick(definition: Definition) {
-        definition.id?.let { findNavController().navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it)) }
+//        definition.id?.let { findNavController().navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it)) }
     }
 
     override fun showProgressbar() {

@@ -10,7 +10,7 @@ import com.butul0ve.urbanslang.bean.Definition
 
 class DefinitionAdapter(
     val definitions: List<Definition>,
-    private val clickListener: DefinitionClickListener
+    private val clickListener: DefinitionClickListener?
 ) :
     androidx.recyclerview.widget.RecyclerView.Adapter<DefinitionAdapter.DefinitionHolder>() {
 
@@ -48,7 +48,7 @@ class DefinitionAdapter(
         }
 
         override fun onClick(v: View?) {
-            clickListener.onItemClick(layoutPosition)
+            clickListener?.onItemClick(layoutPosition)
         }
 
         fun bind(definition: Definition) {
