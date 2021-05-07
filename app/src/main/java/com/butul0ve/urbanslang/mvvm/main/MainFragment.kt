@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.butul0ve.urbanslang.UrbanSlangApp
 import com.butul0ve.urbanslang.data.DataManager
 import com.butul0ve.urbanslang.databinding.FragmentMainNewBinding
@@ -49,6 +50,14 @@ class MainFragment: Fragment() {
         viewModel.getData(query)
         viewModel.definitionAdapter.observe(viewLifecycleOwner, { adapter ->
             binding?.definitionsRV?.adapter = adapter
+        })
+
+        viewModel.onClick.observe(viewLifecycleOwner, { event ->
+            val id = event.getContentIfNotHandledOrReturnNull()
+            id?.let {
+                val action = MainFragmentDirections.actionMainFragmentToDetailFragment(it)
+                findNavController().navigate(action)
+            }
         })
     }
 
