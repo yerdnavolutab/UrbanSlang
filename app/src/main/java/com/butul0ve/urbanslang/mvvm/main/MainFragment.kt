@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -14,6 +15,7 @@ import com.butul0ve.urbanslang.UrbanSlangApp
 import com.butul0ve.urbanslang.data.DataManager
 import com.butul0ve.urbanslang.databinding.FragmentMainNewBinding
 import com.butul0ve.urbanslang.mvvm.factory.ViewModelFactory
+import com.butul0ve.urbanslang.utils.hideKeyboard
 import javax.inject.Inject
 
 private const val QUERY_EXTRA = "query_extra_key"
@@ -72,7 +74,17 @@ class MainFragment: Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
         binding.toolbar.searchView.setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
+        binding.toolbar.searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let { viewModel.getData(it) }
+                binding.root.hideKeyboard(context)
+                return true
+            }
 
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
     }
 
     override fun onDestroyView() {

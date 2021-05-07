@@ -40,7 +40,7 @@ fun readDictionaryFromAssets(context: Context): MutableMap<String, List<String>>
     return dictionary.toMutableMap()
 }
 
-fun View.hideKeyboard(context: Context) {
-    val manager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+fun View.hideKeyboard(context: Context?) {
+    val manager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
     manager?.hideSoftInputFromWindow(this.windowToken, 0)
 }
