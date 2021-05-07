@@ -9,6 +9,7 @@ import com.butul0ve.urbanslang.adapter.DefinitionClickListener
 import com.butul0ve.urbanslang.bean.BaseResponse
 import com.butul0ve.urbanslang.bean.Definition
 import com.butul0ve.urbanslang.data.DataManager
+import com.butul0ve.urbanslang.mvvm.Event
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.SingleSource
@@ -26,13 +27,13 @@ class MainViewModel(
     private val definitionClickListener: DefinitionClickListener by lazy {
         object : DefinitionClickListener {
             override fun onItemClick(position: Int) {
-                _onClick.value = position
+                _onClick.value = Event(_definitionAdapter.value?.definitions?.get(position)?.id ?: -1)
             }
         }
     }
 
-    private val _onClick = MutableLiveData<Int?>()
-    val onClick: LiveData<Int?> = _onClick
+    private val _onClick = MutableLiveData<Event<Long>>()
+    val onClick: LiveData<Event<Long>> = _onClick
 
     private val _query = MutableLiveData("")
     val query: LiveData<String> = _query
