@@ -49,18 +49,10 @@ class MainFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         query = savedInstanceState?.getString(QUERY_EXTRA, "") ?: ""
         binding?.let { prepareUI(it) }
-        viewModel.getData(query)
-        viewModel.definitionAdapter.observe(viewLifecycleOwner, { adapter ->
-            binding?.definitionsRV?.adapter = adapter
-        })
 
-        viewModel.onClick.observe(viewLifecycleOwner, { event ->
-            val id = event.getContentIfNotHandledOrReturnNull()
-            id?.let {
-                val action = MainFragmentDirections.actionMainFragmentToDetailFragment(it)
-                findNavController().navigate(action)
-            }
-        })
+        if (savedInstanceState == null) {
+            viewModel.getData(query)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -83,6 +75,18 @@ class MainFragment: Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 return false
+            }
+        })
+
+        viewModel.definitionAdapter.observe(viewLifecycleOwner, { adapter ->
+            binding.definitionsRV.adapter = adapter
+        })
+
+        viewModel.onClick.observe(viewLifecycleOwner, { event ->
+            val id = event.getContentIfNotHandledOrReturnNull()
+            id?.let {
+                val action = MainFragmentDirections.actionMainFragmentToDetailFragment(it)
+                findNavController().navigate(action)
             }
         })
     }

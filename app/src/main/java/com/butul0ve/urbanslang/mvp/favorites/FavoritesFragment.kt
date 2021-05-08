@@ -95,7 +95,7 @@ class FavoritesFragment : androidx.fragment.app.Fragment(), FavoritesMvpView {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        if (searchView.query != null) {
+        if (::searchView.isInitialized && searchView.query != null) {
             outState.putString(QUERY, searchView.query.toString())
         }
     }
