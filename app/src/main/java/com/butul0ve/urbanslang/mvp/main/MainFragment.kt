@@ -73,7 +73,7 @@ class MainFragment : Fragment(), MainMvpView {
 //        menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
         initSearchView()
         definitionsRV.setOnTouchListener { v, event ->
-            definitionsRV.hideKeyboard(activity!!)
+            definitionsRV.hideKeyboard(requireActivity())
             false
         }
         if (savedInstanceState != null && savedInstanceState.containsKey(QUERY)) {
