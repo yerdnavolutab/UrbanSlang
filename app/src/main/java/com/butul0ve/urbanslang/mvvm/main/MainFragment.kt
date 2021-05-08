@@ -49,7 +49,10 @@ class MainFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         query = savedInstanceState?.getString(QUERY_EXTRA, "") ?: ""
         binding?.let { prepareUI(it) }
-        viewModel.getData(query)
+
+        if (savedInstanceState == null) {
+            viewModel.getData(query)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
