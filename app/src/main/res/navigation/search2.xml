@@ -3,19 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/search2"
     app:startDestination="@id/mainFragment">
 
-<!--    <fragment-->
-<!--        android:id="@+id/mainFragment"-->
-<!--        android:name="com.butul0ve.urbanslang.mvp.main.MainFragment"-->
-<!--        android:label="MainFragment" >-->
-
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.butul0ve.urbanslang.mvvm.main.MainFragment"
         android:label="MainFragment">
-<!--        <argument-->
-<!--            android:name="is_random"-->
-<!--            app:argType="boolean"-->
-<!--            android:defaultValue="false" />-->
         <action
             android:id="@+id/action_mainFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
