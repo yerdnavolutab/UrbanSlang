@@ -84,8 +84,8 @@ class MainFragment : Fragment(), MainMvpView {
 
         if (arguments != null) {
 
-            if (arguments!!.containsKey(WORD)) {
-                word = arguments!!.getString(WORD)!!
+            if (requireArguments().containsKey(WORD)) {
+                word = requireArguments().getString(WORD)!!
             }
 
             arguments = null
