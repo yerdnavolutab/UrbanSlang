@@ -63,7 +63,7 @@ class CacheFragment : androidx.fragment.app.Fragment(), CacheMvpView {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         definitionsRV.setOnTouchListener { v, event ->
-            definitionsRV.hideKeyboard(activity!!)
+            definitionsRV.hideKeyboard(requireActivity())
             false
         }
         if (savedInstanceState != null && savedInstanceState.containsKey(QUERY)) {

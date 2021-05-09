@@ -63,7 +63,7 @@ class FavoritesFragment : androidx.fragment.app.Fragment(), FavoritesMvpView {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         definitionsRV.setOnTouchListener { v, event ->
-            definitionsRV.hideKeyboard(activity!!)
+            definitionsRV.hideKeyboard(requireActivity())
             false
         }
         if (savedInstanceState != null && savedInstanceState.containsKey(QUERY)) {

@@ -59,11 +59,11 @@ class TrendsFragment : androidx.fragment.app.Fragment(), TrendsMvpView {
                 arguments = Bundle()
             }
 
-            arguments!!.putString(LETTER, letter)
+            requireArguments().putString(LETTER, letter)
         }
 
-        if (arguments != null && arguments!!.containsKey(LETTER)) {
-            letter = arguments!!.getString(LETTER)!!
+        if (arguments != null && requireArguments().containsKey(LETTER)) {
+            letter = requireArguments().getString(LETTER)!!
         }
     }
 
