@@ -5,7 +5,6 @@ buildscript {
     ext.kotlin_version = '1.9.10'
     ext.moxy_version = "1.5.5"
     ext.nav_version = '2.5.0'
-    ext.lifecycle_version = "2.6.2"
 
     repositories {
         google()
