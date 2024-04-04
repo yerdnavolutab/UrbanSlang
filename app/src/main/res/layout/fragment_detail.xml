@@ -1,0 +1,63 @@
+<androidx.core.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="16dp">
+
+        <TextView
+                android:id="@+id/word_TV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:padding="16dp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+                tools:text="some word"/>
+
+        <TextView
+                android:id="@+id/definition_TV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/word_TV"
+                android:textIsSelectable="true"
+                tools:text="some definition"/>
+
+        <TextView
+                android:id="@+id/author_TV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/definition_TV"
+                android:gravity="end"
+                tools:text="some author"/>
+
+
+        <TextView
+                android:id="@+id/permalink_TV"
+                android:layout_width="match_parent"
+                android:layout_below="@id/author_TV"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:gravity="center_horizontal"
+                android:padding="8dp"
+                android:textIsSelectable="true"
+                tools:text="some permalink"/>
+
+        <ImageView
+                android:id="@+id/fav_IV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/permalink_TV"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="8dp"
+                android:contentDescription="@string/favorites"
+                android:padding="4dp"
+                tools:src="@drawable/favorite_empty"/>
+
+    </RelativeLayout>
+
+</androidx.core.widget.NestedScrollView>
