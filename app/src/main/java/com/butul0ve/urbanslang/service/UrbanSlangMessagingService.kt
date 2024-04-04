@@ -22,7 +22,7 @@ class UrbanSlangMessagingService : FirebaseMessagingService() {
 
     private val notificationId = AtomicInteger(0)
 
-    override fun onMessageReceived(remoteMessage: RemoteMessage?) {
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         showNotification(remoteMessage)
     }

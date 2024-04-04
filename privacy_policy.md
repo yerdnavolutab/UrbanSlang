@@ -32,8 +32,6 @@ Link to privacy policy of third party service providers used by the app
 
 [Fabric](https://fabric.io/)
 
-[Crashlytics](https://docs.fabric.io/android/crashlytics/overview.html)
-
 ### Log Data
 
 I want to inform you that whenever you use my Service, in a case of an error in the app
