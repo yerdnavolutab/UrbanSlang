@@ -37,11 +37,12 @@ class MainPresenter<V : MainMvpView> @Inject constructor(val dataManager: DataMa
         if (isViewAttached()) {
             mvpView?.showProgressbar()
             dataManager.tempDefinitions.clear()
-            dataManager.getDataFromServer(query)
-                .flatMap { saveDefinitions(it) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getObserver())
+//
+//            dataManager.getDataFromServer(query)
+//                .flatMap { saveDefinitions(it) }
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(getObserver())
         }
     }
 

@@ -3,6 +3,7 @@ package com.butul0ve.urbanslang.data
 import com.butul0ve.urbanslang.bean.BaseResponse
 import com.butul0ve.urbanslang.bean.Definition
 import com.butul0ve.urbanslang.data.db.DbHelper
+import com.butul0ve.urbanslang.network.NetworkClient
 import com.butul0ve.urbanslang.network.NetworkHelper
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -12,12 +13,13 @@ import javax.inject.Inject
 
 class AppDataManager @Inject constructor(
     val dbHelper: DbHelper,
-    val networkHelper: NetworkHelper
+    val networkHelper: NetworkHelper,
+    private val networkClient: NetworkClient
 ) : DataManager() {
 
 
-    override fun getDataFromServer(query: String): Single<BaseResponse> {
-        return networkHelper.getData(query)
+    override suspend fun getDataFromServer(query: String): BaseResponse {
+        return networkClient.getDefinition(query)
     }
 
     override fun getDefinitions(): Flowable<List<Definition>> {

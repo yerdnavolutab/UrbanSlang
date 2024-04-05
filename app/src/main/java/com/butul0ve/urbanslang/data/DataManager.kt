@@ -12,7 +12,7 @@ abstract class DataManager {
 
     val tempDefinitions = ArrayList<Definition>()
 
-    abstract fun getDataFromServer(query: String = ""): Single<BaseResponse>
+    abstract suspend fun getDataFromServer(query: String = ""): BaseResponse
 
     abstract fun getDefinitions(): Flowable<List<Definition>>
 
