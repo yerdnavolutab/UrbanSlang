@@ -17,7 +17,7 @@ class UrbanSlangApp: MultiDexApplication() {
 
     companion object {
 
-        private const val BASE_URL = "http://api.urbandictionary.com/"
+        private const val BASE_URL = "https://api.urbandictionary.com/"
 
         lateinit var netComponent: NetComponent
     }
