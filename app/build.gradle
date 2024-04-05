@@ -71,7 +71,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:23.4.1'
 
     // multidex
-    implementation 'androidx.multidex:multidex:2.0.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
 
     // rate app
     implementation 'com.github.hotchemi:android-rate:1.0.1'
