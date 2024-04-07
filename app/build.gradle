@@ -32,6 +32,10 @@ android {
         jvmTarget = "17"
     }
 
+    buildFeatures {
+        viewBinding true
+    }
+
     namespace 'com.butul0ve.urbanslang'
     testNamespace  'com.butul0ve.urbanslang.test'
 }
@@ -49,7 +53,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
 
     // retrofit2
-    def retrofit_version = '2.5.0'
+    def retrofit_version = '2.11.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"

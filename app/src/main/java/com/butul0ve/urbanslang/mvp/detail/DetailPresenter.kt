@@ -2,7 +2,7 @@ package com.butul0ve.urbanslang.mvp.detail
 
 import android.util.Log
 import com.butul0ve.urbanslang.bean.Definition
-import com.butul0ve.urbanslang.data.DataManager
+import com.butul0ve.urbanslang.data.DataRepo
 import com.butul0ve.urbanslang.mvp.BasePresenter
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -10,7 +10,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class DetailPresenter<V : DetailMvpView> @Inject constructor(val dataManager: DataManager) : BasePresenter<V>(),
+class DetailPresenter<V : DetailMvpView> @Inject constructor(val dataManager: DataRepo) : BasePresenter<V>(),
     DetailMvpPresenter<V> {
 
     override fun loadDefinition(id: Long) {

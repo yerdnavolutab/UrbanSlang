@@ -1,10 +1,9 @@
 package com.butul0ve.urbanslang.utils
 
 import android.content.Context
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import com.butul0ve.urbanslang.mvp.main.MainFragment
+import com.butul0ve.urbanslang.mvp.main.mvvm.MainFragment
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.IOException
@@ -13,7 +12,7 @@ import java.io.IOException
 fun String.convertToFragment(): androidx.fragment.app.Fragment {
 
     return when(this) {
-        MainFragment::class.java.simpleName -> MainFragment()
+        MainFragment::class.java.simpleName -> MainFragment.newInstance()
         else -> androidx.fragment.app.Fragment()
     }
 }

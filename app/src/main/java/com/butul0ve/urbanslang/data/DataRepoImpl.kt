@@ -11,15 +11,27 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
 
-class AppDataManager @Inject constructor(
+class DataRepoImpl @Inject constructor(
     val dbHelper: DbHelper,
     val networkHelper: NetworkHelper,
     private val networkClient: NetworkClient
-) : DataManager() {
+) : DataRepo() {
 
 
-    override suspend fun getDataFromServer(query: String): BaseResponse {
-        return networkClient.getDefinition(query)
+    override suspend fun getDefinition(query: String): Result<BaseResponse> {
+        return try {
+            Result.success(networkClient.getDefinition(query))
+        } catch (ex: Exception) {
+            Result.failure(ex)
+        }
+    }
+
+    override suspend fun getRandomDefinition(): Result<BaseResponse> {
+        return try {
+            Result.success(networkClient.getRandomDefinition())
+        } catch (ex: Exception) {
+            Result.failure(ex)
+        }
     }
 
     override fun getDefinitions(): Flowable<List<Definition>> {

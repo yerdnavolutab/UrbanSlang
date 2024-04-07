@@ -8,11 +8,13 @@ import io.reactivex.Observable
 import io.reactivex.Single
 
 
-abstract class DataManager {
+abstract class DataRepo {
 
     val tempDefinitions = ArrayList<Definition>()
 
-    abstract suspend fun getDataFromServer(query: String = ""): BaseResponse
+    abstract suspend fun getDefinition(query: String = ""): Result<BaseResponse>
+
+    abstract suspend fun getRandomDefinition(): Result<BaseResponse>
 
     abstract fun getDefinitions(): Flowable<List<Definition>>
 

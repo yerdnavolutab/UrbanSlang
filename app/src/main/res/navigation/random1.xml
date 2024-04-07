@@ -5,12 +5,12 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.butul0ve.urbanslang.mvp.main.MainFragment"
+        android:name="com.butul0ve.urbanslang.mvp.main.mvvm.MainFragment"
         android:label="MainFragment" >
         <argument
-            android:name="is_random"
-            app:argType="boolean"
-            android:defaultValue="true" />
+            android:name="query"
+            app:argType="string"
+            app:nullable="true" />
         <action
             android:id="@+id/action_mainFragment_to_detailFragment"
             app:destination="@id/detailFragment" />

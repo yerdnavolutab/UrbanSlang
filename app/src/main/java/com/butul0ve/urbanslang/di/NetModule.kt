@@ -1,6 +1,9 @@
 package com.butul0ve.urbanslang.di
 
+import com.butul0ve.urbanslang.network.Api
 import com.butul0ve.urbanslang.network.AppNetworkHelper
+import com.butul0ve.urbanslang.network.NetworkClient
+import com.butul0ve.urbanslang.network.NetworkClientImpl
 import com.butul0ve.urbanslang.network.NetworkHelper
 import com.butul0ve.urbanslang.network.ServerApi
 import dagger.Module
@@ -34,4 +37,12 @@ class NetModule(private val url: String) {
     fun provideNetworkHelper(serverApi: ServerApi): NetworkHelper {
         return AppNetworkHelper(serverApi)
     }
+
+    @Provides
+    @Singleton
+    fun provideApi(retrofit: Retrofit): Api = retrofit.create(Api::class.java)
+
+    @Provides
+    @Singleton
+    fun provideNetworkClient(api: Api): NetworkClient = NetworkClientImpl(api)
 }

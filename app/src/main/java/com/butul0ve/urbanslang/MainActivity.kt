@@ -6,10 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import com.google.android.material.navigation.NavigationView
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
 import android.view.MenuItem
 import com.butul0ve.urbanslang.bean.Definition
@@ -17,7 +14,7 @@ import com.butul0ve.urbanslang.mvp.FragmentCallback
 import com.butul0ve.urbanslang.mvp.cache.CacheFragment
 import com.butul0ve.urbanslang.mvp.detail.DetailFragment
 import com.butul0ve.urbanslang.mvp.favorites.FavoritesFragment
-import com.butul0ve.urbanslang.mvp.main.MainFragment
+import com.butul0ve.urbanslang.mvp.main.mvvm.MainFragment
 import com.butul0ve.urbanslang.mvp.trends.TrendsFragment
 import com.butul0ve.urbanslang.utils.AppRateImpl
 import com.butul0ve.urbanslang.utils.SharedPreferencesManager
@@ -41,7 +38,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         initUI()
 
         if (savedInstanceState == null) {
-            openFragment(MainFragment())
+            openFragment(MainFragment.newInstance())
 
             val isUserChoice = SharedPreferencesManager.getInstance(this)
                 .getBoolean(IS_USER_CHOICE, false)
@@ -99,7 +96,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return true
             }
             R.id.random_item -> {
-                openFragment(MainFragment.newInstance(true))
+                openFragment(MainFragment.newInstance())
                 return true
             }
             R.id.search_item -> {

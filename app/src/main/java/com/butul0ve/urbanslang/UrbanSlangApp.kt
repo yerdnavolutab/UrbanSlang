@@ -1,9 +1,13 @@
 package com.butul0ve.urbanslang
 
 import androidx.multidex.MultiDexApplication
+import com.butul0ve.urbanslang.data.DataRepo
 import com.butul0ve.urbanslang.di.*
+import javax.inject.Inject
 
 class UrbanSlangApp: MultiDexApplication() {
+
+    @Inject lateinit var dataRepo: DataRepo
 
     override fun onCreate() {
         super.onCreate()
@@ -13,6 +17,7 @@ class UrbanSlangApp: MultiDexApplication() {
             .netModule(NetModule(BASE_URL))
             .dataModule(DataModule())
             .build()
+        netComponent.inject(this)
     }
 
     companion object {
