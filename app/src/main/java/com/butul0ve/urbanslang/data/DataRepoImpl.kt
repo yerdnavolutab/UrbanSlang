@@ -4,7 +4,6 @@ import com.butul0ve.urbanslang.bean.BaseResponse
 import com.butul0ve.urbanslang.bean.Definition
 import com.butul0ve.urbanslang.data.db.DbHelper
 import com.butul0ve.urbanslang.network.NetworkClient
-import com.butul0ve.urbanslang.network.NetworkHelper
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -12,11 +11,9 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class DataRepoImpl @Inject constructor(
-    val dbHelper: DbHelper,
-    val networkHelper: NetworkHelper,
+    private val dbHelper: DbHelper,
     private val networkClient: NetworkClient
 ) : DataRepo() {
-
 
     override suspend fun getDefinition(query: String): Result<BaseResponse> {
         return try {

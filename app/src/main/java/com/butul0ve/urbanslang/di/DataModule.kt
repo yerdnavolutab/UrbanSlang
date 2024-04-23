@@ -44,10 +44,9 @@ class DataModule {
     @Singleton
     fun provideDataManager(
         dbHelper: DbHelper,
-        networkHelper: NetworkHelper,
         networkClient: NetworkClient
     ): DataRepo {
-        return DataRepoImpl(dbHelper, networkHelper, networkClient)
+        return DataRepoImpl(dbHelper, networkClient)
     }
 
     @Provides

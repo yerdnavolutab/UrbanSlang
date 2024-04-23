@@ -12,29 +12,38 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import com.butul0ve.urbanslang.UrbanSlangApp
 import com.butul0ve.urbanslang.adapter.DefinitionAdapter
 import com.butul0ve.urbanslang.adapter.DefinitionClickListener
+import com.butul0ve.urbanslang.data.DataRepo
 import com.butul0ve.urbanslang.databinding.FragmentMainBinding
 import com.butul0ve.urbanslang.utils.hideKeyboard
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class MainFragment : Fragment(), DefinitionClickListener {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: MainViewModel by viewModels<MainViewModel> {
-        MainViewModel.Factory
-    }
+    @Inject
+    lateinit var dataRepo: DataRepo
+
+    private lateinit var viewModel: MainViewModel
 
     private var query: String? = null
 
     private var adapter: DefinitionAdapter? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        UrbanSlangApp.netComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +65,11 @@ class MainFragment : Fragment(), DefinitionClickListener {
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar.toolbarRoot)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
 //        menuToolbarIcon.setOnClickListener { callback.onMenuToolbarClick() }
+
+        viewModel = ViewModelProvider(
+            this,
+            MainViewModel.Companion.MainViewModelFactory(dataRepo)
+        )[MainViewModel::class.java]
         initSearchView()
         binding.definitionsRV.setOnTouchListener { v, event ->
             binding.definitionsRV.hideKeyboard(requireActivity())
